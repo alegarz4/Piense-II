@@ -619,14 +619,6 @@ const PLAN = [
 
 /* ===== util ===== */
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function shuffle(a){
-  var x=a.slice();
-  for(var i=x.length-1;i>0;i--){
-    var j=Math.floor(Math.random()*(i+1));
-    var tmp=x[i]; x[i]=x[j]; x[j]=tmp;
-  }
-  return x;
-}
 
 /* ===== skills/bank ===== */
 var SKILLS = {
@@ -740,6 +732,7 @@ function genQuestionBySkill(skill, difficulty){
 /* ===== state ===== */
 var LS_KEY="piense2_iphone_safe_v1";
 var TEACHER_EMAIL="claudia.garza@jaliscoedu.mx";
+
 function defaultState(){
   var mastery={};
   for(var k in SKILLS){ mastery[k]=0; }
@@ -759,13 +752,13 @@ function defaultState(){
     recentSigs:[]
   };
 }
+
 function loadState(){
   try{
     var raw = localStorage.getItem(LS_KEY);
     if(!raw) return defaultState();
     var obj = JSON.parse(raw);
     var base = defaultState();
-    // merge básico
     for(var k in obj){ base[k]=obj[k]; }
     base.checks = obj.checks || {};
     base.sims = obj.sims || [];
@@ -899,7 +892,6 @@ function updatePracticeKPIs(){
   elLast.textContent = last.correct+"/40";
   elAvg.textContent = avg+"/40";
 }
-
 function refreshKPIs(){
   var total=totalTasks(), done=doneTasks(), p=pctPlan();
   elKpiTotal.textContent = total;
@@ -909,6 +901,7 @@ function refreshKPIs(){
   elBadge.textContent = badgeText(p);
 }
 
+/* ===== render plan ===== */
 function render(){
   elThemeSel.value = state.theme || "dark";
   applyTheme(state.theme || "dark");
@@ -1070,7 +1063,7 @@ document.getElementById("btnExport").addEventListener("click", function(){
 });
 
 /* ===== Practice engine + anti-repetition ===== */
-var sessionSeen = {};         // map sig->true
+var sessionSeen = {};
 var RECENT_LIMIT = 80;
 
 function qSignature(q){
@@ -1099,7 +1092,6 @@ function masteryDelta(skill, correct){
   state.mastery[skill]=next;
 }
 function chooseSkillForPractice(){
-  // peso mayor si mastery bajo
   var keys=[]; for(var k in SKILLS) keys.push(k);
   var weights=[], sum=0;
   for(var i=0;i<keys.length;i++){
@@ -1147,7 +1139,6 @@ function makeQuestion(mode){
       return q;
     }
   }
-  // fallback
   var fb = (mode==="sim") ? "reading" : getWeakestSkill();
   var qf=genQuestionBySkill(fb,calcDifficulty(fb));
   var sf=qSignature(qf);
@@ -1192,7 +1183,7 @@ function openSession(mode){
   sessionIndex=0;
   hits=0; miss=0; xpGain=0;
 
-  sessionSeen={}; // reset anti-repeat per session
+  sessionSeen={};
 
   modeBadge.textContent=(mode==="sim")?"Simulacro PIENSE II":"Práctica adaptativa";
   hitsEl.textContent="0";
