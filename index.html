@@ -18,6 +18,7 @@
       --muted:#a9b6d6;
       --brand:#6ea8ff;
       --brand2:#7cffe6;
+
       --ok:#34d399;
       --warn:#fbbf24;
       --bad:#fb7185;
@@ -34,6 +35,7 @@
       --dash: rgba(255,255,255,.18);
     }
 
+    /* Claro general */
     html[data-theme="light"]{
       --bg:#f6f7fb;
       --panel:#ffffff;
@@ -57,42 +59,54 @@
       --dash: rgba(15,23,42,.18);
     }
 
+    /* Ocean CLARO */
     html[data-theme="ocean"]{
-      --bg:#07131b;
-      --panel:#0b2230;
-      --card:#0a1c27;
-      --txt:#e8fbff;
-      --muted:#a9d7e6;
-      --brand:#22d3ee;
-      --brand2:#60a5fa;
-      --bgGrad1: rgba(34,211,238,.16);
-      --bgGrad2: rgba(96,165,250,.14);
-      --bgGrad3: rgba(251,191,36,.10);
-      --border: rgba(255,255,255,.14);
-      --chipBg: rgba(255,255,255,.08);
-      --chipBorder: rgba(255,255,255,.16);
-      --glass: rgba(255,255,255,.06);
-      --glass2: rgba(255,255,255,.03);
-      --dash: rgba(255,255,255,.18);
+      --bg:#f3fbff;
+      --panel:#ffffff;
+      --card:#ffffff;
+      --txt:#0b1220;
+      --muted:#335b6a;
+
+      --brand:#06b6d4;
+      --brand2:#2563eb;
+      --border: rgba(15,23,42,.12);
+      --shadow: 0 18px 40px rgba(2,6,23,.10);
+
+      --bgGrad1: rgba(6,182,212,.14);
+      --bgGrad2: rgba(37,99,235,.10);
+      --bgGrad3: rgba(245,158,11,.08);
+
+      --chipBg: rgba(15,23,42,.05);
+      --chipBorder: rgba(15,23,42,.12);
+
+      --glass: rgba(15,23,42,.04);
+      --glass2: rgba(15,23,42,.02);
+      --dash: rgba(15,23,42,.18);
     }
 
+    /* Forest CLARO */
     html[data-theme="forest"]{
-      --bg:#07120c;
-      --panel:#0c2016;
-      --card:#0b1a12;
-      --txt:#effdf5;
-      --muted:#a7d6c0;
-      --brand:#22c55e;
-      --brand2:#a3e635;
-      --bgGrad1: rgba(34,197,94,.16);
-      --bgGrad2: rgba(163,230,53,.12);
-      --bgGrad3: rgba(59,130,246,.10);
-      --border: rgba(255,255,255,.14);
-      --chipBg: rgba(255,255,255,.08);
-      --chipBorder: rgba(255,255,255,.16);
-      --glass: rgba(255,255,255,.06);
-      --glass2: rgba(255,255,255,.03);
-      --dash: rgba(255,255,255,.18);
+      --bg:#f4fbf6;
+      --panel:#ffffff;
+      --card:#ffffff;
+      --txt:#0b1220;
+      --muted:#2f5b46;
+
+      --brand:#16a34a;
+      --brand2:#84cc16;
+      --border: rgba(15,23,42,.12);
+      --shadow: 0 18px 40px rgba(2,6,23,.10);
+
+      --bgGrad1: rgba(22,163,74,.14);
+      --bgGrad2: rgba(132,204,22,.10);
+      --bgGrad3: rgba(37,99,235,.06);
+
+      --chipBg: rgba(15,23,42,.05);
+      --chipBorder: rgba(15,23,42,.12);
+
+      --glass: rgba(15,23,42,.04);
+      --glass2: rgba(15,23,42,.02);
+      --dash: rgba(15,23,42,.18);
     }
 
     *{box-sizing:border-box}
@@ -110,12 +124,19 @@
 
     header{
       position:sticky; top:0; z-index:10;
-      background: linear-gradient(90deg, rgba(110,168,255,.18), rgba(124,255,230,.10));
+      background: linear-gradient(90deg, rgba(110,168,255,.12), rgba(124,255,230,.08));
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--border);
       padding:14px 16px;
     }
+    html[data-theme="ocean"] header{
+      background: linear-gradient(90deg, rgba(6,182,212,.12), rgba(37,99,235,.10));
+    }
+    html[data-theme="forest"] header{
+      background: linear-gradient(90deg, rgba(22,163,74,.12), rgba(132,204,22,.10));
+    }
+
     .wrap{max-width:1180px; margin:0 auto;}
     .top{display:flex; gap:14px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;}
     .brand{display:flex; gap:12px; align-items:center;}
@@ -127,8 +148,23 @@
       box-shadow: var(--shadow);
       border:1px solid rgba(255,255,255,.22);
     }
+    html[data-theme="light"] .logo,
+    html[data-theme="ocean"] .logo,
+    html[data-theme="forest"] .logo{
+      border-color: rgba(15,23,42,.12);
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.95), transparent 60%),
+        linear-gradient(135deg, rgba(37,99,235,.92), rgba(14,165,233,.75));
+    }
+    html[data-theme="forest"] .logo{
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.95), transparent 60%),
+        linear-gradient(135deg, rgba(22,163,74,.92), rgba(132,204,22,.78));
+    }
+
     h1{font-size:18px; margin:0; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:12px; margin-top:2px}
+
     .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; justify-content:flex-end;}
     button, .pill, select, input[type="date"]{
       border:1px solid var(--border);
@@ -141,6 +177,9 @@
       outline:none;
     }
     button:hover{border-color: rgba(110,168,255,.55)}
+    html[data-theme="ocean"] button:hover{border-color: rgba(6,182,212,.55)}
+    html[data-theme="forest"] button:hover{border-color: rgba(22,163,74,.55)}
+
     .pill{cursor:default; font-weight:800; background: var(--chipBg); border-color: var(--chipBorder)}
     .pill strong{color:var(--brand2)}
     .small{font-size:12px}
@@ -177,7 +216,10 @@
       border:1px solid var(--border);
       background: rgba(15,26,51,.35);
     }
-    html[data-theme="light"] .kpi .box{ background: rgba(15,23,42,.04); }
+    html[data-theme="light"] .kpi .box,
+    html[data-theme="ocean"] .kpi .box,
+    html[data-theme="forest"] .kpi .box{ background: rgba(15,23,42,.04); }
+
     .kpi .box .n{font-size:20px; font-weight:900; letter-spacing:.3px}
     .kpi .box .l{font-size:12px; color:var(--muted)}
 
@@ -202,7 +244,10 @@
       margin:10px 0;
       overflow:hidden;
     }
-    html[data-theme="light"] details{ background: rgba(15,23,42,.03); }
+    html[data-theme="light"] details,
+    html[data-theme="ocean"] details,
+    html[data-theme="forest"] details{ background: rgba(15,23,42,.03); }
+
     summary{
       padding:12px 12px;
       cursor:pointer;
@@ -262,7 +307,16 @@
       color: var(--txt);
       margin-top:10px;
     }
+    html[data-theme="ocean"] .hint{
+      border-color: rgba(6,182,212,.22);
+      background: rgba(6,182,212,.10);
+    }
+    html[data-theme="forest"] .hint{
+      border-color: rgba(22,163,74,.22);
+      background: rgba(22,163,74,.10);
+    }
     .hint b{color:var(--brand2)}
+
     .footer{
       margin-top:14px;
       display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap;
@@ -277,44 +331,44 @@
       font-weight:900;
     }
 
-    /* Modal */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-      z-index:50;
+    .btnPrimary{
+      background: linear-gradient(90deg, var(--brand), var(--brand2));
+      border:1px solid rgba(255,255,255,.18);
+      color:#07131b;
     }
-    .overlay.show{display:flex}
-    .modal{
-      width:min(860px, 100%);
-      border-radius:22px;
+    html[data-theme="light"] .btnPrimary,
+    html[data-theme="ocean"] .btnPrimary,
+    html[data-theme="forest"] .btnPrimary{
+      color:#06111b;
+      border-color: rgba(15,23,42,.12);
+    }
+
+    /* ===== Practica INLINE ===== */
+    .practicePanel{
+      margin-top:12px;
       border:1px solid var(--border);
-      background: linear-gradient(180deg, rgba(17,26,46,.96), rgba(15,26,51,.92));
-      box-shadow: var(--shadow);
+      border-radius:18px;
+      background: var(--glass);
       overflow:hidden;
+      display:none;
     }
-    html[data-theme="light"] .modal{
-      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.96));
-    }
-    .modal .mhd{
-      padding:14px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    .practicePanel.show{display:block}
+    .ppHd{
+      padding:12px 12px 10px;
       border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;
+      font-weight:900;
     }
-    .modal .mhd .title{font-weight:1000}
-    .modal .mbd{padding:14px 16px 16px}
+    .ppBd{padding:12px}
+    .qmeta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 10px;}
     .qprompt{
       padding:12px;
       border-radius:16px;
       border:1px solid var(--border);
-      background: var(--glass);
+      background: var(--glass2);
       margin-bottom:12px;
       line-height:1.35;
     }
-    .qmeta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 10px;}
     .options{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
     @media (max-width: 720px){ .options{grid-template-columns:1fr} }
     .opt{
@@ -325,12 +379,15 @@
       cursor:pointer;
       font-weight:800;
       text-align:left;
-      transition: transform .05s ease, border-color .2s ease, background .2s ease;
       user-select:none;
     }
-    .opt:hover{border-color: rgba(110,168,255,.55); transform: translateY(-1px);}
+    .opt:hover{border-color: rgba(110,168,255,.55);}
+    html[data-theme="ocean"] .opt:hover{border-color: rgba(6,182,212,.55);}
+    html[data-theme="forest"] .opt:hover{border-color: rgba(22,163,74,.55);}
+
     .opt.correct{border-color: rgba(52,211,153,.55); background: rgba(52,211,153,.14);}
     .opt.wrong{border-color: rgba(251,113,133,.60); background: rgba(251,113,133,.14);}
+
     .explain{
       margin-top:12px;
       padding:12px;
@@ -339,24 +396,20 @@
       background: rgba(15,26,51,.35);
       display:none;
     }
-    html[data-theme="light"] .explain{ background: rgba(15,23,42,.04); }
+    html[data-theme="light"] .explain,
+    html[data-theme="ocean"] .explain,
+    html[data-theme="forest"] .explain{ background: rgba(15,23,42,.04); }
     .explain.show{display:block}
-    .mft{
-      padding:12px 16px;
+
+    .ppFt{
+      padding:12px;
       border-top:1px solid var(--border);
-      display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap;
-      background: rgba(17,26,46,.55);
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      background: var(--glass2);
     }
-    html[data-theme="light"] .mft{ background: rgba(15,23,42,.03); }
-    .btnPrimary{
-      background: linear-gradient(90deg, rgba(110,168,255,.95), rgba(124,255,230,.85));
-      border:1px solid rgba(255,255,255,.22);
-      color:#07131b;
-    }
-    html[data-theme="light"] .btnPrimary{ color:#05203a; border-color: rgba(15,23,42,.14); }
 
     @media print{
-      header, .actions, .rightTools, button, .overlay{display:none !important}
+      header, .actions, .rightTools, button{display:none !important}
       body{background:#fff; color:#111}
       .card{box-shadow:none; border:1px solid #ddd; background:#fff}
       .muted{color:#444}
@@ -384,8 +437,8 @@
         <select id="themeSel">
           <option value="dark">Oscuro</option>
           <option value="light">Claro</option>
-          <option value="ocean">Ocean</option>
-          <option value="forest">Forest</option>
+          <option value="ocean">Ocean (claro)</option>
+          <option value="forest">Forest (claro)</option>
         </select>
       </label>
 
@@ -450,6 +503,9 @@
               <option value="A1">A1</option>
               <option value="A2" selected>A2</option>
               <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
             </select>
           </div>
           <div>
@@ -469,6 +525,34 @@
             <div class="row" style="margin-top:6px">
               <button id="btnPractice" class="btnPrimary">Práctica adaptativa (10)</button>
               <button id="btnSim">Simulacro (40 / 30 min)</button>
+            </div>
+
+            <!-- PANEL INLINE -->
+            <div class="practicePanel" id="practicePanel">
+              <div class="ppHd">
+                <span id="ppTitle">Práctica</span>
+                <span class="badge" id="ppCount">—</span>
+                <span class="badge" id="ppTimer" style="display:none">⏱ —</span>
+                <button id="ppClose">Cerrar</button>
+              </div>
+              <div class="ppBd">
+                <div class="qmeta">
+                  <span class="badge" id="skillBadge">Habilidad: —</span>
+                  <span class="badge" id="diffBadge">Dificultad: —</span>
+                </div>
+
+                <div class="qprompt" id="qPrompt">—</div>
+                <div class="options" id="qOptions"></div>
+                <div class="explain" id="qExplain"></div>
+              </div>
+              <div class="ppFt">
+                <div class="row" style="gap:8px; align-items:center">
+                  <span class="badge">XP: <b id="xpGain">0</b></span>
+                  <span class="badge">Aciertos: <b id="hits">0</b></span>
+                  <span class="badge">Errores: <b id="miss">0</b></span>
+                </div>
+                <button id="btnNext" class="btnPrimary" disabled>Siguiente</button>
+              </div>
             </div>
 
             <div class="kpi" style="margin-top:10px">
@@ -512,111 +596,7 @@
   </div>
 </main>
 
-<div class="overlay" id="overlay" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true">
-    <div class="mhd">
-      <div class="title" id="mTitle">Práctica</div>
-      <div class="row" style="gap:8px">
-        <span class="badge" id="modeBadge">—</span>
-        <span class="badge" id="qCountBadge">—</span>
-        <button id="btnClose">Cerrar</button>
-      </div>
-    </div>
-    <div class="mbd">
-      <div class="qmeta">
-        <span class="badge" id="skillBadge">Habilidad: —</span>
-        <span class="badge" id="diffBadge">Dificultad: —</span>
-        <span class="badge" id="timerBadge" style="display:none">⏱ —</span>
-      </div>
-
-      <div class="qprompt" id="qPrompt">—</div>
-      <div class="options" id="qOptions"></div>
-      <div class="explain" id="qExplain"></div>
-    </div>
-    <div class="mft">
-      <div class="row" style="gap:8px; align-items:center">
-        <span class="badge">XP: <b id="xpGain">0</b></span>
-        <span class="badge">Aciertos: <b id="hits">0</b></span>
-        <span class="badge">Errores: <b id="miss">0</b></span>
-      </div>
-      <button id="btnNext" class="btnPrimary" disabled>Siguiente</button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ====== PLAN ====== */
-const PLAN = [
-  { title:"Semana 1 — Fundamentos + lectura", sessions:[
-    { name:"Sesión 1", focus:"Diagnóstico", tasks:[
-      {id:"w1s1t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
-      {id:"w1s1t2", t:"Reading", d:"Haz lectura y preguntas en la práctica."},
-      {id:"w1s1t3", t:"Bitácora", d:"Anota 5 errores comunes."}
-    ]},
-    { name:"Sesión 2", focus:"Main idea + details", tasks:[
-      {id:"w1s2t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
-      {id:"w1s2t2", t:"Vocab in context", d:"Reactivos de vocabulario."},
-      {id:"w1s2t3", t:"Notas", d:"8 palabras nuevas + 1 oración."}
-    ]},
-    { name:"Sesión 3", focus:"Gramática base", tasks:[
-      {id:"w1s3t1", t:"Prepositions", d:"Refuerza in/on/at."},
-      {id:"w1s3t2", t:"Quantifiers", d:"Refuerza many/much."},
-      {id:"w1s3t3", t:"Correct sentence", d:"Refuerza orden de oración."}
-    ]}
-  ]},
-  { title:"Semana 2 — Conectores + funciones", sessions:[
-    { name:"Sesión 4", focus:"Connectors", tasks:[
-      {id:"w2s1t1", t:"Connectors (10)", d:"10 reactivos de conectores."},
-      {id:"w2s1t2", t:"Reading", d:"Lectura con preguntas."},
-      {id:"w2s1t3", t:"Bitácora", d:"6 conectores y uso."}
-    ]},
-    { name:"Sesión 5", focus:"Functions", tasks:[
-      {id:"w2s2t1", t:"Requests", d:"Could you…?"},
-      {id:"w2s2t2", t:"Advice", d:"should/shouldn’t."},
-      {id:"w2s2t3", t:"Invitations", d:"Would you like…?/Let’s…"}
-    ]},
-    { name:"Sesión 6", focus:"Mixed set", tasks:[
-      {id:"w2s3t1", t:"Práctica adaptativa (10)", d:"10 reactivos mezclados."},
-      {id:"w2s3t2", t:"Vocab", d:"Vocabulario en contexto."},
-      {id:"w2s3t3", t:"Bitácora", d:"5 tips contra distractores."}
-    ]}
-  ]},
-  { title:"Semana 3 — Tiempos + modales + comparativos", sessions:[
-    { name:"Sesión 7", focus:"Tenses", tasks:[
-      {id:"w3s1t1", t:"Tenses", d:"Refuerza tiempos verbales."},
-      {id:"w3s1t2", t:"Reading", d:"Lectura con inferencia."},
-      {id:"w3s1t3", t:"Bitácora", d:"6 verbos irregulares."}
-    ]},
-    { name:"Sesión 8", focus:"Modals", tasks:[
-      {id:"w3s2t1", t:"Modals", d:"can/must/should."},
-      {id:"w3s2t2", t:"Rules / signs", d:"must/mustn’t."},
-      {id:"w3s2t3", t:"Mini dialogues", d:"Funciones en diálogo."}
-    ]},
-    { name:"Sesión 9", focus:"Comparatives", tasks:[
-      {id:"w3s3t1", t:"Comparatives", d:"Comparativos."},
-      {id:"w3s3t2", t:"Superlatives", d:"Superlativos."},
-      {id:"w3s3t3", t:"Vocab", d:"Vocab en contexto."}
-    ]}
-  ]},
-  { title:"Semana 4 — Simulacros + cierre", sessions:[
-    { name:"Sesión 10", focus:"Simulacro 1", tasks:[
-      {id:"w4s1t1", t:"Simulacro (40 / 30 min)", d:"40 preguntas."},
-      {id:"w4s1t2", t:"Análisis", d:"3 debilidades + 3 acciones."},
-      {id:"w4s1t3", t:"Práctica (10)", d:"Refuerza errores."}
-    ]},
-    { name:"Sesión 11", focus:"Simulacro 2", tasks:[
-      {id:"w4s2t1", t:"Simulacro (40 / 30 min)", d:"Segundo simulacro."},
-      {id:"w4s2t2", t:"Reading extra", d:"Lectura adicional."},
-      {id:"w4s2t3", t:"Falsos cognados", d:"10 falsos cognados."}
-    ]},
-    { name:"Sesión 12", focus:"Cierre", tasks:[
-      {id:"w4s3t1", t:"Práctica (10)", d:"Últimos 10 reactivos."},
-      {id:"w4s3t2", t:"Repaso rápido", d:"Lee tus notas."},
-      {id:"w4s3t3", t:"Plan de examen", d:"Orden y tiempos."}
-    ]}
-  ]}
-];
-
 /* ===== util ===== */
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
@@ -725,17 +705,87 @@ function genQuestionBySkill(skill, difficulty){
   if(skill==="correct_sentence"){
     return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.a, explain:it.ex};
   }
-  var prompt = it.s;
-  return {skill:skill, difficulty:difficulty||1, prompt:prompt, options:it.opts, answer:it.opts.indexOf(it.a), explain:it.ex};
+  return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.opts.indexOf(it.a), explain:it.ex};
 }
 
+/* ====== PLAN ====== */
+const PLAN = [
+  { title:"Semana 1 — Fundamentos + lectura", sessions:[
+    { name:"Sesión 1", focus:"Diagnóstico", tasks:[
+      {id:"w1s1t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
+      {id:"w1s1t2", t:"Reading", d:"Haz lectura y preguntas en la práctica."},
+      {id:"w1s1t3", t:"Bitácora", d:"Anota 5 errores comunes."}
+    ]},
+    { name:"Sesión 2", focus:"Main idea + details", tasks:[
+      {id:"w1s2t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
+      {id:"w1s2t2", t:"Vocab in context", d:"Reactivos de vocabulario."},
+      {id:"w1s2t3", t:"Notas", d:"8 palabras nuevas + 1 oración."}
+    ]},
+    { name:"Sesión 3", focus:"Gramática base", tasks:[
+      {id:"w1s3t1", t:"Prepositions", d:"Refuerza in/on/at."},
+      {id:"w1s3t2", t:"Quantifiers", d:"Refuerza many/much."},
+      {id:"w1s3t3", t:"Correct sentence", d:"Refuerza orden de oración."}
+    ]}
+  ]},
+  { title:"Semana 2 — Conectores + funciones", sessions:[
+    { name:"Sesión 4", focus:"Connectors", tasks:[
+      {id:"w2s1t1", t:"Connectors (10)", d:"10 reactivos de conectores."},
+      {id:"w2s1t2", t:"Reading", d:"Lectura con preguntas."},
+      {id:"w2s1t3", t:"Bitácora", d:"6 conectores y uso."}
+    ]},
+    { name:"Sesión 5", focus:"Functions", tasks:[
+      {id:"w2s2t1", t:"Requests", d:"Could you…?"},
+      {id:"w2s2t2", t:"Advice", d:"should/shouldn’t."},
+      {id:"w2s2t3", t:"Invitations", d:"Would you like…?/Let’s…"}
+    ]},
+    { name:"Sesión 6", focus:"Mixed set", tasks:[
+      {id:"w2s3t1", t:"Práctica adaptativa (10)", d:"10 reactivos mezclados."},
+      {id:"w2s3t2", t:"Vocab", d:"Vocabulario en contexto."},
+      {id:"w2s3t3", t:"Bitácora", d:"5 tips contra distractores."}
+    ]}
+  ]},
+  { title:"Semana 3 — Tiempos + modales + comparativos", sessions:[
+    { name:"Sesión 7", focus:"Tenses", tasks:[
+      {id:"w3s1t1", t:"Tenses", d:"Refuerza tiempos verbales."},
+      {id:"w3s1t2", t:"Reading", d:"Lectura con inferencia."},
+      {id:"w3s1t3", t:"Bitácora", d:"6 verbos irregulares."}
+    ]},
+    { name:"Sesión 8", focus:"Modals", tasks:[
+      {id:"w3s2t1", t:"Modals", d:"can/must/should."},
+      {id:"w3s2t2", t:"Rules / signs", d:"must/mustn’t."},
+      {id:"w3s2t3", t:"Mini dialogues", d:"Funciones en diálogo."}
+    ]},
+    { name:"Sesión 9", focus:"Comparatives", tasks:[
+      {id:"w3s3t1", t:"Comparatives", d:"Comparativos."},
+      {id:"w3s3t2", t:"Superlatives", d:"Superlativos."},
+      {id:"w3s3t3", t:"Vocab", d:"Vocab en contexto."}
+    ]}
+  ]},
+  { title:"Semana 4 — Simulacros + cierre", sessions:[
+    { name:"Sesión 10", focus:"Simulacro 1", tasks:[
+      {id:"w4s1t1", t:"Simulacro (40 / 30 min)", d:"40 preguntas."},
+      {id:"w4s1t2", t:"Análisis", d:"3 debilidades + 3 acciones."},
+      {id:"w4s1t3", t:"Práctica (10)", d:"Refuerza errores."}
+    ]},
+    { name:"Sesión 11", focus:"Simulacro 2", tasks:[
+      {id:"w4s2t1", t:"Simulacro (40 / 30 min)", d:"Segundo simulacro."},
+      {id:"w4s2t2", t:"Reading extra", d:"Lectura adicional."},
+      {id:"w4s2t3", t:"Falsos cognados", d:"10 falsos cognados."}
+    ]},
+    { name:"Sesión 12", focus:"Cierre", tasks:[
+      {id:"w4s3t1", t:"Práctica (10)", d:"Últimos 10 reactivos."},
+      {id:"w4s3t2", t:"Repaso rápido", d:"Lee tus notas."},
+      {id:"w4s3t3", t:"Plan de examen", d:"Orden y tiempos."}
+    ]}
+  ]}
+];
+
 /* ===== state ===== */
-var LS_KEY="piense2_iphone_safe_v1";
+var LS_KEY="piense2_inline_autodone_v3";
 var TEACHER_EMAIL="claudia.garza@jaliscoedu.mx";
 
 function defaultState(){
-  var mastery={};
-  for(var k in SKILLS){ mastery[k]=0; }
+  var mastery={}; for(var k in SKILLS){ mastery[k]=0; }
   return {
     theme:"dark",
     startDate:"",
@@ -752,7 +802,6 @@ function defaultState(){
     recentSigs:[]
   };
 }
-
 function loadState(){
   try{
     var raw = localStorage.getItem(LS_KEY);
@@ -764,13 +813,9 @@ function loadState(){
     base.sims = obj.sims || [];
     base.recentSigs = obj.recentSigs || [];
     base.mastery = base.mastery || {};
-    for(var s in SKILLS){
-      if(typeof base.mastery[s] !== "number") base.mastery[s]=0;
-    }
+    for(var s in SKILLS){ if(typeof base.mastery[s] !== "number") base.mastery[s]=0; }
     return base;
-  }catch(e){
-    return defaultState();
-  }
+  }catch(e){ return defaultState(); }
 }
 var state = loadState();
 function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
@@ -797,17 +842,18 @@ var elBest=document.getElementById("bestScore");
 var elLast=document.getElementById("lastScore");
 var elAvg=document.getElementById("avgScore");
 
-var overlay=document.getElementById("overlay");
+/* practice inline */
+var practicePanel=document.getElementById("practicePanel");
+var ppTitle=document.getElementById("ppTitle");
+var ppCount=document.getElementById("ppCount");
+var ppTimer=document.getElementById("ppTimer");
+var ppClose=document.getElementById("ppClose");
 var qPrompt=document.getElementById("qPrompt");
 var qOptions=document.getElementById("qOptions");
 var qExplain=document.getElementById("qExplain");
 var btnNext=document.getElementById("btnNext");
-var btnClose=document.getElementById("btnClose");
-var modeBadge=document.getElementById("modeBadge");
-var qCountBadge=document.getElementById("qCountBadge");
 var skillBadge=document.getElementById("skillBadge");
 var diffBadge=document.getElementById("diffBadge");
-var timerBadge=document.getElementById("timerBadge");
 var xpGainEl=document.getElementById("xpGain");
 var hitsEl=document.getElementById("hits");
 var missEl=document.getElementById("miss");
@@ -901,6 +947,41 @@ function refreshKPIs(){
   elBadge.textContent = badgeText(p);
 }
 
+/* ===== AUTO-MARCAR TAREAS DEL PLAN ===== */
+function markTaskDone(taskId){
+  if(!taskId) return;
+  state.checks = state.checks || {};
+  state.checks[taskId] = true;
+  saveState();
+
+  var row = document.querySelector('.task[data-id="'+taskId+'"]');
+  if(row){
+    var cb = row.querySelector('input[type="checkbox"]');
+    if(cb) cb.checked = true;
+    row.classList.add("done");
+  }
+  refreshKPIs();
+}
+
+function findNextPlanTaskIdByLabel(label1, label2){
+  for(var wi=0; wi<PLAN.length; wi++){
+    var w = PLAN[wi];
+    for(var si=0; si<w.sessions.length; si++){
+      var s = w.sessions[si];
+      for(var ti=0; ti<s.tasks.length; ti++){
+        var t = s.tasks[ti];
+        var title = (t.t || "").toLowerCase();
+        var match1 = label1 && title.indexOf(label1.toLowerCase()) !== -1;
+        var match2 = label2 && title.indexOf(label2.toLowerCase()) !== -1;
+        if((match1 || match2) && !state.checks[t.id]){
+          return t.id;
+        }
+      }
+    }
+  }
+  return "";
+}
+
 /* ===== render plan ===== */
 function render(){
   elThemeSel.value = state.theme || "dark";
@@ -958,8 +1039,7 @@ function render(){
 
           cb.addEventListener("change", function(){
             state.checks[task.id]=cb.checked;
-            if(cb.checked) tDiv.classList.add("done");
-            else tDiv.classList.remove("done");
+            tDiv.classList.toggle("done", cb.checked);
             saveState();
             refreshKPIs();
           });
@@ -968,7 +1048,7 @@ function render(){
           tt.className="t";
           tt.innerHTML="<b>"+task.t+"</b><span>"+task.d+"</span>";
 
-          if(cb.checked) tDiv.classList.add("done");
+          tDiv.classList.toggle("done", cb.checked);
           tDiv.appendChild(cb);
           tDiv.appendChild(tt);
           sWrap.appendChild(tDiv);
@@ -986,15 +1066,10 @@ function render(){
   updatePracticeKPIs();
 }
 
-/* ===== events top ===== */
-elStartDate.addEventListener("change", function(){
-  state.startDate = elStartDate.value || "";
-  saveState();
-  render();
-});
+/* ===== eventos ===== */
+elStartDate.addEventListener("change", function(){ state.startDate = elStartDate.value || ""; saveState(); render(); });
 elNotes.addEventListener("input", function(){
-  state.notes = elNotes.value;
-  saveState();
+  state.notes = elNotes.value; saveState();
   elSavedMsg.textContent = "Guardado ✓";
   setTimeout(function(){ elSavedMsg.textContent="—"; }, 900);
 });
@@ -1009,9 +1084,7 @@ document.getElementById("btnReset").addEventListener("click", function(){
 });
 document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
 document.getElementById("btnCollapse").addEventListener("click", function(){
-  state.collapsed = !state.collapsed;
-  saveState();
-  render();
+  state.collapsed = !state.collapsed; saveState(); render();
 });
 document.getElementById("btnCopy").addEventListener("click", function(){
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -1024,7 +1097,7 @@ document.getElementById("btnCopy").addEventListener("click", function(){
   }
 });
 
-/* ===== Export CSV (SIN replaceAll) ===== */
+/* ===== Export CSV ===== */
 document.getElementById("btnExport").addEventListener("click", function(){
   var rows=[["taskId","status","week","session","taskTitle","level","minutes","startDate","xp","streak"]];
   for(var wi=0; wi<PLAN.length; wi++){
@@ -1062,7 +1135,7 @@ document.getElementById("btnExport").addEventListener("click", function(){
   URL.revokeObjectURL(url);
 });
 
-/* ===== Practice engine + anti-repetition ===== */
+/* ===== Adaptativo + anti repetición ===== */
 var sessionSeen = {};
 var RECENT_LIMIT = 80;
 
@@ -1148,7 +1221,7 @@ function makeQuestion(mode){
   return qf;
 }
 
-/* modal session */
+/* ===== Session inline ===== */
 var sessionMode=null, sessionTotal=0, sessionIndex=0, currentQ=null, locked=false;
 var hits=0, miss=0, xpGain=0;
 var simSecondsLeft=0, simTimer=null, simSecondsUsed=0;
@@ -1175,24 +1248,37 @@ function updateStreak(){
 function tickTimer(){
   var mm=("0"+Math.floor(simSecondsLeft/60)).slice(-2);
   var ss=("0"+(simSecondsLeft%60)).slice(-2);
-  timerBadge.textContent="⏱ "+mm+":"+ss;
+  ppTimer.textContent="⏱ "+mm+":"+ss;
 }
+
+function showPanel(){ practicePanel.classList.add("show"); }
+function hidePanel(){
+  practicePanel.classList.remove("show");
+  if(simTimer){ clearInterval(simTimer); simTimer=null; }
+}
+
 function openSession(mode){
   sessionMode=mode;
   sessionTotal=(mode==="sim")?40:10;
   sessionIndex=0;
   hits=0; miss=0; xpGain=0;
-
   sessionSeen={};
 
-  modeBadge.textContent=(mode==="sim")?"Simulacro PIENSE II":"Práctica adaptativa";
+  ppTitle.textContent = (mode==="sim") ? "Simulacro PIENSE II (Inglés)" : "Práctica adaptativa";
   hitsEl.textContent="0";
   missEl.textContent="0";
   xpGainEl.textContent="0";
+  btnNext.disabled=true;
+  qExplain.classList.remove("show");
+  qExplain.innerHTML="";
+  qOptions.innerHTML="";
+  qPrompt.innerHTML="";
+
+  showPanel();
 
   if(mode==="sim"){
     simSecondsLeft=30*60; simSecondsUsed=0;
-    timerBadge.style.display="inline-flex";
+    ppTimer.style.display="inline-flex";
     tickTimer();
     if(simTimer){ clearInterval(simTimer); simTimer=null; }
     simTimer=setInterval(function(){
@@ -1201,19 +1287,13 @@ function openSession(mode){
       if(simSecondsLeft<=0) endSession(true);
     },1000);
   }else{
-    timerBadge.style.display="none";
+    ppTimer.style.display="none";
     if(simTimer){ clearInterval(simTimer); simTimer=null; }
   }
 
-  overlay.classList.add("show");
-  overlay.setAttribute("aria-hidden","false");
   nextQuestion();
 }
-function closeSession(){
-  overlay.classList.remove("show");
-  overlay.setAttribute("aria-hidden","true");
-  if(simTimer){ clearInterval(simTimer); simTimer=null; }
-}
+
 function renderQuestion(q){
   locked=false;
   currentQ=q;
@@ -1236,6 +1316,7 @@ function renderQuestion(q){
     })(i);
   }
 }
+
 function chooseOption(idx){
   if(locked) return;
   locked=true;
@@ -1260,13 +1341,15 @@ function chooseOption(idx){
   qExplain.classList.add("show");
   btnNext.disabled=false;
 }
+
 function nextQuestion(){
   sessionIndex++;
   if(sessionIndex>sessionTotal){ endSession(false); return; }
-  qCountBadge.textContent = sessionIndex+" / "+sessionTotal;
+  ppCount.textContent = sessionIndex+" / "+sessionTotal;
   var q=makeQuestion(sessionMode);
   renderQuestion(q);
 }
+
 function endSession(fromTimeout){
   updateStreak();
   state.xp = (state.xp||0) + xpGain;
@@ -1276,9 +1359,19 @@ function endSession(fromTimeout){
     var pct=Math.round((correct/total)*100);
     state.sims.push({dateISO:(new Date().toISOString()), correct:correct, total:total, pct:pct, secondsUsed: fromTimeout?(30*60):simSecondsUsed});
   }
+
   saveState();
   updatePracticeKPIs();
   refreshKPIs();
+
+  /* ✅ AUTO-TACHADO */
+  if(sessionMode === "sim"){
+    markTaskDone(findNextPlanTaskIdByLabel("simulacro"));
+  }else{
+    var id = findNextPlanTaskIdByLabel("práctica adaptativa", "práctica (10)");
+    if(!id) id = findNextPlanTaskIdByLabel("práctica");
+    markTaskDone(id);
+  }
 
   var pct2=Math.round((hits/sessionTotal)*100);
   qPrompt.innerHTML =
@@ -1301,7 +1394,7 @@ function endSession(fromTimeout){
 document.getElementById("btnPractice").addEventListener("click", function(){ openSession("practice"); });
 document.getElementById("btnSim").addEventListener("click", function(){ openSession("sim"); });
 btnNext.addEventListener("click", function(){ nextQuestion(); });
-btnClose.addEventListener("click", function(){ closeSession(); });
+ppClose.addEventListener("click", function(){ hidePanel(); });
 
 /* ===== Email progress ===== */
 document.getElementById("btnEmail").addEventListener("click", function(){
@@ -1315,6 +1408,7 @@ document.getElementById("btnEmail").addEventListener("click", function(){
 "Te comparto mi progreso en la app PIENSE II (Inglés):\n\n"+
 "- Fecha: "+(new Date().toLocaleString())+"\n"+
 "- Avance del plan: "+planPct+"%\n"+
+"- Nivel objetivo: "+(state.level||"")+"\n"+
 "- XP: "+(state.xp||0)+"\n"+
 "- Racha: "+(state.streak||0)+" día(s)\n"+
 "- Habilidad más débil: "+weak+"\n"+
