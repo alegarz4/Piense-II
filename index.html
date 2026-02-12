@@ -172,7 +172,7 @@
       color: var(--txt);
       padding:10px 12px;
       border-radius: 14px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       outline:none;
     }
@@ -180,7 +180,7 @@
     html[data-theme="ocean"] button:hover{border-color: rgba(6,182,212,.55)}
     html[data-theme="forest"] button:hover{border-color: rgba(22,163,74,.55)}
 
-    .pill{cursor:default; font-weight:800; background: var(--chipBg); border-color: var(--chipBorder)}
+    .pill{cursor:default; background: var(--chipBg); border-color: var(--chipBorder)}
     .pill strong{color:var(--brand2)}
     .small{font-size:12px}
     .muted{color:var(--muted)}
@@ -307,14 +307,8 @@
       color: var(--txt);
       margin-top:10px;
     }
-    html[data-theme="ocean"] .hint{
-      border-color: rgba(6,182,212,.22);
-      background: rgba(6,182,212,.10);
-    }
-    html[data-theme="forest"] .hint{
-      border-color: rgba(22,163,74,.22);
-      background: rgba(22,163,74,.10);
-    }
+    html[data-theme="ocean"] .hint{ border-color: rgba(6,182,212,.22); background: rgba(6,182,212,.10); }
+    html[data-theme="forest"] .hint{ border-color: rgba(22,163,74,.22); background: rgba(22,163,74,.10); }
     .hint b{color:var(--brand2)}
 
     .footer{
@@ -377,7 +371,7 @@
       border-radius:16px;
       padding:12px 12px;
       cursor:pointer;
-      font-weight:800;
+      font-weight:900;
       text-align:left;
       user-select:none;
     }
@@ -412,7 +406,6 @@
       header, .actions, .rightTools, button{display:none !important}
       body{background:#fff; color:#111}
       .card{box-shadow:none; border:1px solid #ddd; background:#fff}
-      .muted{color:#444}
       details{break-inside:avoid}
       .task{border:1px solid #ddd; background:#fff}
       .task.done{background:#f2fff8}
@@ -527,7 +520,6 @@
               <button id="btnSim">Simulacro (40 / 30 min)</button>
             </div>
 
-            <!-- PANEL INLINE -->
             <div class="practicePanel" id="practicePanel">
               <div class="ppHd">
                 <span id="ppTitle">Práctica</span>
@@ -597,813 +589,827 @@
 </main>
 
 <script>
-/* ===== util ===== */
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-/* ===== skills/bank ===== */
-var SKILLS = {
-  prepositions:"Prepositions (in/on/at/to/from)",
-  quantifiers:"Quantifiers (many/much/a lot/a few/a little)",
-  demonstratives:"Demonstratives (this/that/these/those)",
-  connectors:"Connectors (because/although/however/so/therefore)",
-  correct_sentence:"Choose the correct sentence",
-  tenses:"Tenses (present/past/future)",
-  modals:"Modals (can/must/should)",
-  comparatives:"Comparatives/Superlatives",
-  reading:"Reading (main idea/details/inference)",
-  functions:"Functions (requests/advice/invitations)",
-  vocab:"Vocabulary in context"
-};
+  var SKILLS = {
+    prepositions:"Prepositions (in/on/at/to/from)",
+    quantifiers:"Quantifiers (many/much/a lot/a few/a little)",
+    demonstratives:"Demonstratives (this/that/these/those)",
+    connectors:"Connectors (because/although/however/so/therefore)",
+    correct_sentence:"Choose the correct sentence",
+    tenses:"Tenses (present/past/future)",
+    modals:"Modals (can/must/should)",
+    comparatives:"Comparatives/Superlatives",
+    reading:"Reading (main idea/details/inference)",
+    functions:"Functions (requests/advice/invitations)",
+    vocab:"Vocabulary in context"
+  };
 
-var READING_PASSAGES = [
-  { id:"r1", text:"A small community library started a 'Book Buddy' program. Volunteers read with children once a week. After two months, teachers noticed better reading confidence.",
-    q:[
-      {prompt:"What is the main idea?", options:["The library is closing.","Volunteers help children read; confidence improves.","Children hate books.","Teachers stop reading."], answer:1, explain:"The program improves confidence."},
-      {prompt:"Which detail is mentioned?", options:["Every day.","Teachers noticed better reading confidence.","No volunteers.","Books were sold."], answer:1, explain:"That detail appears in the text."}
+  var READING_PASSAGES = [
+    { id:"r1", text:"A small community library started a 'Book Buddy' program. Volunteers read with children once a week. After two months, teachers noticed better reading confidence.",
+      q:[
+        {prompt:"What is the main idea?", options:["The library is closing.","Volunteers help children read; confidence improves.","Children hate books.","Teachers stop reading."], answer:1, explain:"The program improves confidence."},
+        {prompt:"Which detail is mentioned?", options:["Every day.","Teachers noticed better reading confidence.","No volunteers.","Books were sold."], answer:1, explain:"That detail appears in the text."}
+      ]
+    },
+    { id:"r2", text:"During the rainy season, some streets flood quickly. The city installed new drains. Residents say water disappears faster, but they want more cleaning to prevent trash from blocking drains.",
+      q:[
+        {prompt:"Why do residents want more street cleaning?", options:["Drains are expensive.","Trash can block drains.","They dislike rain.","Streets are dry."], answer:1, explain:"Cleaning prevents trash from blocking drains."},
+        {prompt:"What can be inferred?", options:["Drains helped but more is needed.","Drains will be removed.","Residents want fewer drains.","Flooding never happens."], answer:0, explain:"Helped, but more actions are needed."}
+      ]
+    }
+  ];
+
+  var BANK = {
+    prepositions:[
+      {s:"Our next class will be ____ Friday.", a:"on", opts:["in","at","on","over"], ex:"Use 'on' for days."},
+      {s:"I was born ____ 2009.", a:"in", opts:["in","on","at","by"], ex:"Use 'in' for years."},
+      {s:"The meeting starts ____ 8:30.", a:"at", opts:["in","on","at","to"], ex:"Use 'at' for time."},
+      {s:"She goes to school ____ bus.", a:"by", opts:["by","in","on","at"], ex:"Transport: by bus."},
+      {s:"The keys are ____ the table.", a:"on", opts:["on","in","at","to"], ex:"Surface → on."},
+      {s:"Please put the milk ____ the fridge.", a:"in", opts:["in","on","at","to"], ex:"Inside → in."}
+    ],
+    quantifiers:[
+      {s:"There is ____ water in the bottle.", a:"much", opts:["many","much","a few","these"], ex:"Uncountable → much."},
+      {s:"I have ____ friends.", a:"many", opts:["many","much","a little","at"], ex:"Countable plural → many."},
+      {s:"We have ____ apples.", a:"a few", opts:["a few","much","a little","those"], ex:"Countable → a few."},
+      {s:"I need ____ information.", a:"a little", opts:["a little","a few","many","those"], ex:"Uncountable → a little."}
+    ],
+    demonstratives:[
+      {s:"____ apples are sweeter than usual.", a:"These", opts:["This","That","Them","These"], ex:"Plural near → These."},
+      {s:"Look at ____ mountains over there.", a:"Those", opts:["That","Those","This","These"], ex:"Plural far → Those."}
+    ],
+    connectors:[
+      {s:"I studied hard, ____ I felt confident.", a:"so", opts:["so","because","although","however"], ex:"Result → so."},
+      {s:"She stayed home ____ she was sick.", a:"because", opts:["because","so","however","although"], ex:"Reason → because."},
+      {s:"____ it was raining, they played soccer.", a:"Although", opts:["Although","Because","So","Therefore"], ex:"Contrast → although."},
+      {s:"I wanted to go; ____, I was tired.", a:"however", opts:["however","so","because","therefore"], ex:"Contrast → however."}
+    ],
+    correct_sentence:[
+      {s:"Choose the CORRECT sentence.",
+       opts:["My sister don't like spicy food.","My sister doesn't likes spicy food.","My sister doesn't like spicy food.","My sister not like spicy food."],
+       a:2, ex:"doesn't + base verb."},
+      {s:"Choose the CORRECT sentence.",
+       opts:["There is many students today.","There are many students today.","There are much students today.","There is a few students today."],
+       a:1, ex:"Many + plural → are."}
+    ],
+    tenses:[
+      {s:"Yesterday I ____ to the store.", a:"went", opts:["go","went","going","goes"], ex:"Past of go = went."},
+      {s:"She ____ English every day.", a:"studies", opts:["study","studies","studied","studying"], ex:"3rd person singular."},
+      {s:"Tomorrow we ____ visit my grandma.", a:"will", opts:["will","did","are","was"], ex:"Future: will + base."}
+    ],
+    modals:[
+      {s:"You ____ wear a helmet. It's required.", a:"must", opts:["can","must","should","might"], ex:"Rule → must."},
+      {s:"You ____ see a doctor. (advice)", a:"should", opts:["should","mustn't","can","did"], ex:"Advice → should."}
+    ],
+    comparatives:[
+      {s:"My phone is ____ than yours.", a:"newer", opts:["new","newer","newest","the new"], ex:"Comparative: newer."},
+      {s:"This is the ____ movie.", a:"best", opts:["better","best","good","well"], ex:"Superlative: best."}
+    ],
+    functions:[
+      {s:"“____ you help me?”", a:"Could", opts:["Could","Must","Did","Was"], ex:"Polite request."},
+      {s:"“You ____ drink more water.”", a:"should", opts:["should","mustn't","are","did"], ex:"Advice."}
+    ],
+    vocab:[
+      {s:"“Borrow” means:", a:"to take and return", opts:["to buy","to sell","to take and return","to break"], ex:"Borrow = take temporarily."},
+      {s:"Opposite of “cheap”:", a:"expensive", opts:["small","expensive","easy","quiet"], ex:"Cheap ↔ expensive."}
     ]
-  },
-  { id:"r2", text:"During the rainy season, some streets flood quickly. The city installed new drains. Residents say water disappears faster, but they want more cleaning to prevent trash from blocking drains.",
-    q:[
-      {prompt:"Why do residents want more street cleaning?", options:["Drains are expensive.","Trash can block drains.","They dislike rain.","Streets are dry."], answer:1, explain:"Cleaning prevents trash from blocking drains."},
-      {prompt:"What can be inferred?", options:["Drains helped but more is needed.","Drains will be removed.","Residents want fewer drains.","Flooding never happens."], answer:0, explain:"Helped, but more actions are needed."}
-    ]
+  };
+
+  function genQuestionBySkill(skill, difficulty){
+    if(skill==="reading"){
+      var p = pick(READING_PASSAGES);
+      var qi = Math.floor(Math.random()*p.q.length);
+      var q = p.q[qi];
+      return {
+        skill:skill, difficulty:difficulty||1,
+        prompt:'<span class="muted small">[Reading '+p.id+'-'+(qi+1)+']</span><br><br><b>Read:</b> '+p.text+
+               '<br><br><b>Question:</b> '+q.prompt,
+        options:q.options,
+        answer:q.answer,
+        explain:q.explain
+      };
+    }
+    var arr = BANK[skill] || BANK.prepositions;
+    var it = pick(arr);
+    if(skill==="correct_sentence"){
+      return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.a, explain:it.ex};
+    }
+    return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.opts.indexOf(it.a), explain:it.ex};
   }
-];
 
-var BANK = {
-  prepositions:[
-    {s:"Our next class will be ____ Friday.", a:"on", opts:["in","at","on","over"], ex:"Use 'on' for days."},
-    {s:"I was born ____ 2009.", a:"in", opts:["in","on","at","by"], ex:"Use 'in' for years."},
-    {s:"The meeting starts ____ 8:30.", a:"at", opts:["in","on","at","to"], ex:"Use 'at' for time."},
-    {s:"She goes to school ____ bus.", a:"by", opts:["by","in","on","at"], ex:"Transport: by bus."},
-    {s:"The keys are ____ the table.", a:"on", opts:["on","in","at","to"], ex:"Surface → on."},
-    {s:"Please put the milk ____ the fridge.", a:"in", opts:["in","on","at","to"], ex:"Inside → in."}
-  ],
-  quantifiers:[
-    {s:"There is ____ water in the bottle.", a:"much", opts:["many","much","a few","these"], ex:"Uncountable → much."},
-    {s:"I have ____ friends.", a:"many", opts:["many","much","a little","at"], ex:"Countable plural → many."},
-    {s:"We have ____ apples.", a:"a few", opts:["a few","much","a little","those"], ex:"Countable → a few."},
-    {s:"I need ____ information.", a:"a little", opts:["a little","a few","many","those"], ex:"Uncountable → a little."}
-  ],
-  demonstratives:[
-    {s:"____ apples are sweeter than usual.", a:"These", opts:["This","That","Them","These"], ex:"Plural near → These."},
-    {s:"Look at ____ mountains over there.", a:"Those", opts:["That","Those","This","These"], ex:"Plural far → Those."}
-  ],
-  connectors:[
-    {s:"I studied hard, ____ I felt confident.", a:"so", opts:["so","because","although","however"], ex:"Result → so."},
-    {s:"She stayed home ____ she was sick.", a:"because", opts:["because","so","however","although"], ex:"Reason → because."},
-    {s:"____ it was raining, they played soccer.", a:"Although", opts:["Although","Because","So","Therefore"], ex:"Contrast → although."},
-    {s:"I wanted to go; ____, I was tired.", a:"however", opts:["however","so","because","therefore"], ex:"Contrast → however."}
-  ],
-  correct_sentence:[
-    {s:"Choose the CORRECT sentence.",
-     opts:["My sister don't like spicy food.","My sister doesn't likes spicy food.","My sister doesn't like spicy food.","My sister not like spicy food."],
-     a:2, ex:"doesn't + base verb."},
-    {s:"Choose the CORRECT sentence.",
-     opts:["There is many students today.","There are many students today.","There are much students today.","There is a few students today."],
-     a:1, ex:"Many + plural → are."}
-  ],
-  tenses:[
-    {s:"Yesterday I ____ to the store.", a:"went", opts:["go","went","going","goes"], ex:"Past of go = went."},
-    {s:"She ____ English every day.", a:"studies", opts:["study","studies","studied","studying"], ex:"3rd person singular."},
-    {s:"Tomorrow we ____ visit my grandma.", a:"will", opts:["will","did","are","was"], ex:"Future: will + base."}
-  ],
-  modals:[
-    {s:"You ____ wear a helmet. It's required.", a:"must", opts:["can","must","should","might"], ex:"Rule → must."},
-    {s:"You ____ see a doctor. (advice)", a:"should", opts:["should","mustn't","can","did"], ex:"Advice → should."}
-  ],
-  comparatives:[
-    {s:"My phone is ____ than yours.", a:"newer", opts:["new","newer","newest","the new"], ex:"Comparative: newer."},
-    {s:"This is the ____ movie.", a:"best", opts:["better","best","good","well"], ex:"Superlative: best."}
-  ],
-  functions:[
-    {s:"“____ you help me?”", a:"Could", opts:["Could","Must","Did","Was"], ex:"Polite request."},
-    {s:"“You ____ drink more water.”", a:"should", opts:["should","mustn't","are","did"], ex:"Advice."}
-  ],
-  vocab:[
-    {s:"“Borrow” means:", a:"to take and return", opts:["to buy","to sell","to take and return","to break"], ex:"Borrow = take temporarily."},
-    {s:"Opposite of “cheap”:", a:"expensive", opts:["small","expensive","easy","quiet"], ex:"Cheap ↔ expensive."}
-  ]
-};
+  const PLAN = [
+    { title:"Semana 1 — Fundamentos + lectura", sessions:[
+      { name:"Sesión 1", focus:"Diagnóstico", tasks:[
+        {id:"w1s1t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
+        {id:"w1s1t2", t:"Reading", d:"Haz lectura y preguntas en la práctica."},
+        {id:"w1s1t3", t:"Bitácora", d:"Anota 5 errores comunes."}
+      ]},
+      { name:"Sesión 2", focus:"Main idea + details", tasks:[
+        {id:"w1s2t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
+        {id:"w1s2t2", t:"Vocab in context", d:"Reactivos de vocabulario."},
+        {id:"w1s2t3", t:"Notas", d:"8 palabras nuevas + 1 oración."}
+      ]},
+      { name:"Sesión 3", focus:"Gramática base", tasks:[
+        {id:"w1s3t1", t:"Prepositions", d:"Refuerza in/on/at."},
+        {id:"w1s3t2", t:"Quantifiers", d:"Refuerza many/much."},
+        {id:"w1s3t3", t:"Correct sentence", d:"Refuerza orden de oración."}
+      ]}
+    ]},
+    { title:"Semana 2 — Conectores + funciones", sessions:[
+      { name:"Sesión 4", focus:"Connectors", tasks:[
+        {id:"w2s1t1", t:"Connectors (10)", d:"10 reactivos de conectores."},
+        {id:"w2s1t2", t:"Reading", d:"Lectura con preguntas."},
+        {id:"w2s1t3", t:"Bitácora", d:"6 conectores y uso."}
+      ]},
+      { name:"Sesión 5", focus:"Functions", tasks:[
+        {id:"w2s2t1", t:"Requests", d:"Could you…?"},
+        {id:"w2s2t2", t:"Advice", d:"should/shouldn’t."},
+        {id:"w2s2t3", t:"Invitations", d:"Would you like…?/Let’s…"}
+      ]},
+      { name:"Sesión 6", focus:"Mixed set", tasks:[
+        {id:"w2s3t1", t:"Práctica adaptativa (10)", d:"10 reactivos mezclados."},
+        {id:"w2s3t2", t:"Vocab", d:"Vocabulario en contexto."},
+        {id:"w2s3t3", t:"Bitácora", d:"5 tips contra distractores."}
+      ]}
+    ]},
+    { title:"Semana 3 — Tiempos + modales + comparativos", sessions:[
+      { name:"Sesión 7", focus:"Tenses", tasks:[
+        {id:"w3s1t1", t:"Tenses", d:"Refuerza tiempos verbales."},
+        {id:"w3s1t2", t:"Reading", d:"Lectura con inferencia."},
+        {id:"w3s1t3", t:"Bitácora", d:"6 verbos irregulares."}
+      ]},
+      { name:"Sesión 8", focus:"Modals", tasks:[
+        {id:"w3s2t1", t:"Modals", d:"can/must/should."},
+        {id:"w3s2t2", t:"Rules / signs", d:"must/mustn’t."},
+        {id:"w3s2t3", t:"Mini dialogues", d:"Funciones en diálogo."}
+      ]},
+      { name:"Sesión 9", focus:"Comparatives", tasks:[
+        {id:"w3s3t1", t:"Comparatives", d:"Comparativos."},
+        {id:"w3s3t2", t:"Superlatives", d:"Superlativos."},
+        {id:"w3s3t3", t:"Vocab", d:"Vocab en contexto."}
+      ]}
+    ]},
+    { title:"Semana 4 — Simulacros + cierre", sessions:[
+      { name:"Sesión 10", focus:"Simulacro 1", tasks:[
+        {id:"w4s1t1", t:"Simulacro (40 / 30 min)", d:"40 preguntas."},
+        {id:"w4s1t2", t:"Análisis", d:"3 debilidades + 3 acciones."},
+        {id:"w4s1t3", t:"Práctica (10)", d:"Refuerza errores."}
+      ]},
+      { name:"Sesión 11", focus:"Simulacro 2", tasks:[
+        {id:"w4s2t1", t:"Simulacro (40 / 30 min)", d:"Segundo simulacro."},
+        {id:"w4s2t2", t:"Reading extra", d:"Lectura adicional."},
+        {id:"w4s2t3", t:"Falsos cognados", d:"10 falsos cognados."}
+      ]},
+      { name:"Sesión 12", focus:"Cierre", tasks:[
+        {id:"w4s3t1", t:"Práctica (10)", d:"Últimos 10 reactivos."},
+        {id:"w4s3t2", t:"Repaso rápido", d:"Lee tus notas."},
+        {id:"w4s3t3", t:"Plan de examen", d:"Orden y tiempos."}
+      ]}
+    ]}
+  ];
 
-function genQuestionBySkill(skill, difficulty){
-  if(skill==="reading"){
-    var p = pick(READING_PASSAGES);
-    var qi = Math.floor(Math.random()*p.q.length);
-    var q = p.q[qi];
+  var LS_KEY="piense2_inline_autodone_v4";
+  var TEACHER_EMAIL="claudia.garza@jaliscoedu.mx";
+
+  function defaultState(){
+    var mastery={}; for(var k in SKILLS){ mastery[k]=0; }
     return {
-      skill:skill, difficulty:difficulty||1,
-      prompt:'<span class="muted small">[Reading '+p.id+'-'+(qi+1)+']</span><br><br><b>Read:</b> '+p.text+
-             '<br><br><b>Question:</b> '+q.prompt,
-      options:q.options,
-      answer:q.answer,
-      explain:q.explain
+      theme:"dark",
+      startDate:"",
+      level:"A2",
+      mins:"35",
+      notes:"",
+      checks:{},
+      collapsed:false,
+      xp:0,
+      lastPracticeDate:"",
+      streak:0,
+      mastery: mastery,
+      sims:[],
+      recentSigs:[]
     };
   }
-  var arr = BANK[skill] || BANK.prepositions;
-  var it = pick(arr);
-  if(skill==="correct_sentence"){
-    return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.a, explain:it.ex};
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return defaultState();
+      var obj = JSON.parse(raw);
+      var base = defaultState();
+      for(var k in obj){ base[k]=obj[k]; }
+      base.checks = obj.checks || {};
+      base.sims = obj.sims || [];
+      base.recentSigs = obj.recentSigs || [];
+      base.mastery = base.mastery || {};
+      for(var s in SKILLS){ if(typeof base.mastery[s] !== "number") base.mastery[s]=0; }
+      return base;
+    }catch(e){ return defaultState(); }
   }
-  return {skill:skill, difficulty:difficulty||1, prompt:it.s, options:it.opts, answer:it.opts.indexOf(it.a), explain:it.ex};
-}
+  var state = loadState();
+  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-/* ====== PLAN ====== */
-const PLAN = [
-  { title:"Semana 1 — Fundamentos + lectura", sessions:[
-    { name:"Sesión 1", focus:"Diagnóstico", tasks:[
-      {id:"w1s1t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
-      {id:"w1s1t2", t:"Reading", d:"Haz lectura y preguntas en la práctica."},
-      {id:"w1s1t3", t:"Bitácora", d:"Anota 5 errores comunes."}
-    ]},
-    { name:"Sesión 2", focus:"Main idea + details", tasks:[
-      {id:"w1s2t1", t:"Práctica adaptativa (10)", d:"Completa 10 reactivos."},
-      {id:"w1s2t2", t:"Vocab in context", d:"Reactivos de vocabulario."},
-      {id:"w1s2t3", t:"Notas", d:"8 palabras nuevas + 1 oración."}
-    ]},
-    { name:"Sesión 3", focus:"Gramática base", tasks:[
-      {id:"w1s3t1", t:"Prepositions", d:"Refuerza in/on/at."},
-      {id:"w1s3t2", t:"Quantifiers", d:"Refuerza many/much."},
-      {id:"w1s3t3", t:"Correct sentence", d:"Refuerza orden de oración."}
-    ]}
-  ]},
-  { title:"Semana 2 — Conectores + funciones", sessions:[
-    { name:"Sesión 4", focus:"Connectors", tasks:[
-      {id:"w2s1t1", t:"Connectors (10)", d:"10 reactivos de conectores."},
-      {id:"w2s1t2", t:"Reading", d:"Lectura con preguntas."},
-      {id:"w2s1t3", t:"Bitácora", d:"6 conectores y uso."}
-    ]},
-    { name:"Sesión 5", focus:"Functions", tasks:[
-      {id:"w2s2t1", t:"Requests", d:"Could you…?"},
-      {id:"w2s2t2", t:"Advice", d:"should/shouldn’t."},
-      {id:"w2s2t3", t:"Invitations", d:"Would you like…?/Let’s…"}
-    ]},
-    { name:"Sesión 6", focus:"Mixed set", tasks:[
-      {id:"w2s3t1", t:"Práctica adaptativa (10)", d:"10 reactivos mezclados."},
-      {id:"w2s3t2", t:"Vocab", d:"Vocabulario en contexto."},
-      {id:"w2s3t3", t:"Bitácora", d:"5 tips contra distractores."}
-    ]}
-  ]},
-  { title:"Semana 3 — Tiempos + modales + comparativos", sessions:[
-    { name:"Sesión 7", focus:"Tenses", tasks:[
-      {id:"w3s1t1", t:"Tenses", d:"Refuerza tiempos verbales."},
-      {id:"w3s1t2", t:"Reading", d:"Lectura con inferencia."},
-      {id:"w3s1t3", t:"Bitácora", d:"6 verbos irregulares."}
-    ]},
-    { name:"Sesión 8", focus:"Modals", tasks:[
-      {id:"w3s2t1", t:"Modals", d:"can/must/should."},
-      {id:"w3s2t2", t:"Rules / signs", d:"must/mustn’t."},
-      {id:"w3s2t3", t:"Mini dialogues", d:"Funciones en diálogo."}
-    ]},
-    { name:"Sesión 9", focus:"Comparatives", tasks:[
-      {id:"w3s3t1", t:"Comparatives", d:"Comparativos."},
-      {id:"w3s3t2", t:"Superlatives", d:"Superlativos."},
-      {id:"w3s3t3", t:"Vocab", d:"Vocab en contexto."}
-    ]}
-  ]},
-  { title:"Semana 4 — Simulacros + cierre", sessions:[
-    { name:"Sesión 10", focus:"Simulacro 1", tasks:[
-      {id:"w4s1t1", t:"Simulacro (40 / 30 min)", d:"40 preguntas."},
-      {id:"w4s1t2", t:"Análisis", d:"3 debilidades + 3 acciones."},
-      {id:"w4s1t3", t:"Práctica (10)", d:"Refuerza errores."}
-    ]},
-    { name:"Sesión 11", focus:"Simulacro 2", tasks:[
-      {id:"w4s2t1", t:"Simulacro (40 / 30 min)", d:"Segundo simulacro."},
-      {id:"w4s2t2", t:"Reading extra", d:"Lectura adicional."},
-      {id:"w4s2t3", t:"Falsos cognados", d:"10 falsos cognados."}
-    ]},
-    { name:"Sesión 12", focus:"Cierre", tasks:[
-      {id:"w4s3t1", t:"Práctica (10)", d:"Últimos 10 reactivos."},
-      {id:"w4s3t2", t:"Repaso rápido", d:"Lee tus notas."},
-      {id:"w4s3t3", t:"Plan de examen", d:"Orden y tiempos."}
-    ]}
-  ]}
-];
+  var elWeeks=document.getElementById("weeks");
+  var elBar=document.getElementById("bar");
+  var elKpiDone=document.getElementById("kpiDone");
+  var elKpiTotal=document.getElementById("kpiTotal");
+  var elKpiPct=document.getElementById("kpiPct");
+  var elBadge=document.getElementById("statusBadge");
+  var elStartDate=document.getElementById("startDate");
+  var elStartLabel=document.getElementById("startLabel");
+  var elNotes=document.getElementById("notes");
+  var elSavedMsg=document.getElementById("savedMsg");
+  var elLevel=document.getElementById("level");
+  var elMins=document.getElementById("mins");
+  var elThemeSel=document.getElementById("themeSel");
 
-/* ===== state ===== */
-var LS_KEY="piense2_inline_autodone_v3";
-var TEACHER_EMAIL="claudia.garza@jaliscoedu.mx";
+  var elXP=document.getElementById("xpNow");
+  var elStreak=document.getElementById("streakNow");
+  var elWeakSkill=document.getElementById("skillNow");
+  var elBest=document.getElementById("bestScore");
+  var elLast=document.getElementById("lastScore");
+  var elAvg=document.getElementById("avgScore");
 
-function defaultState(){
-  var mastery={}; for(var k in SKILLS){ mastery[k]=0; }
-  return {
-    theme:"dark",
-    startDate:"",
-    level:"A2",
-    mins:"35",
-    notes:"",
-    checks:{},
-    collapsed:false,
-    xp:0,
-    lastPracticeDate:"",
-    streak:0,
-    mastery: mastery,
-    sims:[],
-    recentSigs:[]
-  };
-}
-function loadState(){
-  try{
-    var raw = localStorage.getItem(LS_KEY);
-    if(!raw) return defaultState();
-    var obj = JSON.parse(raw);
-    var base = defaultState();
-    for(var k in obj){ base[k]=obj[k]; }
-    base.checks = obj.checks || {};
-    base.sims = obj.sims || [];
-    base.recentSigs = obj.recentSigs || [];
-    base.mastery = base.mastery || {};
-    for(var s in SKILLS){ if(typeof base.mastery[s] !== "number") base.mastery[s]=0; }
-    return base;
-  }catch(e){ return defaultState(); }
-}
-var state = loadState();
-function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  var practicePanel=document.getElementById("practicePanel");
+  var ppTitle=document.getElementById("ppTitle");
+  var ppCount=document.getElementById("ppCount");
+  var ppTimer=document.getElementById("ppTimer");
+  var ppClose=document.getElementById("ppClose");
+  var qPrompt=document.getElementById("qPrompt");
+  var qOptions=document.getElementById("qOptions");
+  var qExplain=document.getElementById("qExplain");
+  var btnNext=document.getElementById("btnNext");
+  var skillBadge=document.getElementById("skillBadge");
+  var diffBadge=document.getElementById("diffBadge");
+  var xpGainEl=document.getElementById("xpGain");
+  var hitsEl=document.getElementById("hits");
+  var missEl=document.getElementById("miss");
 
-/* ===== DOM ===== */
-var elWeeks=document.getElementById("weeks");
-var elBar=document.getElementById("bar");
-var elKpiDone=document.getElementById("kpiDone");
-var elKpiTotal=document.getElementById("kpiTotal");
-var elKpiPct=document.getElementById("kpiPct");
-var elBadge=document.getElementById("statusBadge");
-var elStartDate=document.getElementById("startDate");
-var elStartLabel=document.getElementById("startLabel");
-var elNotes=document.getElementById("notes");
-var elSavedMsg=document.getElementById("savedMsg");
-var elLevel=document.getElementById("level");
-var elMins=document.getElementById("mins");
-var elThemeSel=document.getElementById("themeSel");
+  /* ✅ FIX: botón final */
+  var sessionFinished = false;
+  var originalNextLabel = "Siguiente";
 
-var elXP=document.getElementById("xpNow");
-var elStreak=document.getElementById("streakNow");
-var elWeakSkill=document.getElementById("skillNow");
-var elBest=document.getElementById("bestScore");
-var elLast=document.getElementById("lastScore");
-var elAvg=document.getElementById("avgScore");
-
-/* practice inline */
-var practicePanel=document.getElementById("practicePanel");
-var ppTitle=document.getElementById("ppTitle");
-var ppCount=document.getElementById("ppCount");
-var ppTimer=document.getElementById("ppTimer");
-var ppClose=document.getElementById("ppClose");
-var qPrompt=document.getElementById("qPrompt");
-var qOptions=document.getElementById("qOptions");
-var qExplain=document.getElementById("qExplain");
-var btnNext=document.getElementById("btnNext");
-var skillBadge=document.getElementById("skillBadge");
-var diffBadge=document.getElementById("diffBadge");
-var xpGainEl=document.getElementById("xpGain");
-var hitsEl=document.getElementById("hits");
-var missEl=document.getElementById("miss");
-
-/* ===== helpers ===== */
-function fmtDate(iso){
-  if(!iso) return "—";
-  var p=iso.split("-"); var y=+p[0], m=+p[1], d=+p[2];
-  var dt=new Date(y,m-1,d);
-  return dt.toLocaleDateString("es-MX",{year:"numeric",month:"long",day:"2-digit"});
-}
-function addDays(iso, days){
-  if(!iso) return "";
-  var p=iso.split("-"); var y=+p[0], m=+p[1], d=+p[2];
-  var dt=new Date(y,m-1,d);
-  dt.setDate(dt.getDate()+days);
-  var yy=dt.getFullYear();
-  var mm=("0"+(dt.getMonth()+1)).slice(-2);
-  var dd=("0"+dt.getDate()).slice(-2);
-  return yy+"-"+mm+"-"+dd;
-}
-function totalTasks(){
-  var total=0;
-  for(var i=0;i<PLAN.length;i++){
-    for(var j=0;j<PLAN[i].sessions.length;j++){
-      total += PLAN[i].sessions[j].tasks.length;
+  function fmtDate(iso){
+    if(!iso) return "—";
+    var p=iso.split("-"); var y=+p[0], m=+p[1], d=+p[2];
+    var dt=new Date(y,m-1,d);
+    return dt.toLocaleDateString("es-MX",{year:"numeric",month:"long",day:"2-digit"});
+  }
+  function addDays(iso, days){
+    if(!iso) return "";
+    var p=iso.split("-"); var y=+p[0], m=+p[1], d=+p[2];
+    var dt=new Date(y,m-1,d);
+    dt.setDate(dt.getDate()+days);
+    var yy=dt.getFullYear();
+    var mm=("0"+(dt.getMonth()+1)).slice(-2);
+    var dd=("0"+dt.getDate()).slice(-2);
+    return yy+"-"+mm+"-"+dd;
+  }
+  function totalTasks(){
+    var total=0;
+    for(var i=0;i<PLAN.length;i++){
+      for(var j=0;j<PLAN[i].sessions.length;j++){
+        total += PLAN[i].sessions[j].tasks.length;
+      }
     }
+    return total;
   }
-  return total;
-}
-function doneTasks(){
-  var done=0;
-  for(var k in state.checks){ if(state.checks[k]) done++; }
-  return done;
-}
-function pctPlan(){
-  var t=totalTasks(), d=doneTasks();
-  return t? Math.round((d/t)*100) : 0;
-}
-function badgeText(p){
-  if(p===100) return "¡Listo! 100% completado";
-  if(p>=75) return p+"% • Casi listo";
-  if(p>=40) return p+"% • Buen ritmo";
-  if(p>0) return p+"% • Arrancando";
-  return "0% completado";
-}
-function applyTheme(t){
-  document.documentElement.setAttribute("data-theme", t);
-  state.theme = t;
-  saveState();
-}
-elThemeSel.addEventListener("change", function(){ applyTheme(elThemeSel.value); });
-
-function getWeakestSkill(){
-  var weakest="prepositions", min=999;
-  for(var k in state.mastery){
-    var v=state.mastery[k]||0;
-    if(v<min){ min=v; weakest=k; }
+  function doneTasks(){
+    var done=0;
+    for(var k in state.checks){ if(state.checks[k]) done++; }
+    return done;
   }
-  return weakest;
-}
-function updatePracticeKPIs(){
-  elXP.textContent = state.xp || 0;
-  elStreak.textContent = state.streak || 0;
-  elWeakSkill.textContent = SKILLS[getWeakestSkill()] || "—";
-
-  if(!state.sims.length){
-    elBest.textContent = "—";
-    elLast.textContent = "—";
-    elAvg.textContent = "—";
-    return;
+  function pctPlan(){
+    var t=totalTasks(), d=doneTasks();
+    return t? Math.round((d/t)*100) : 0;
   }
-  var last = state.sims[state.sims.length-1];
-  var best = state.sims[0];
-  for(var i=1;i<state.sims.length;i++){
-    if(state.sims[i].correct > best.correct) best = state.sims[i];
+  function badgeText(p){
+    if(p===100) return "¡Listo! 100% completado";
+    if(p>=75) return p+"% • Casi listo";
+    if(p>=40) return p+"% • Buen ritmo";
+    if(p>0) return p+"% • Arrancando";
+    return "0% completado";
   }
-  var sum=0;
-  for(var j=0;j<state.sims.length;j++) sum += state.sims[j].correct;
-  var avg=Math.round(sum/state.sims.length);
-  elBest.textContent = best.correct+"/40";
-  elLast.textContent = last.correct+"/40";
-  elAvg.textContent = avg+"/40";
-}
-function refreshKPIs(){
-  var total=totalTasks(), done=doneTasks(), p=pctPlan();
-  elKpiTotal.textContent = total;
-  elKpiDone.textContent = done;
-  elKpiPct.textContent = p+"%";
-  elBar.style.width = p+"%";
-  elBadge.textContent = badgeText(p);
-}
 
-/* ===== AUTO-MARCAR TAREAS DEL PLAN ===== */
-function markTaskDone(taskId){
-  if(!taskId) return;
-  state.checks = state.checks || {};
-  state.checks[taskId] = true;
-  saveState();
-
-  var row = document.querySelector('.task[data-id="'+taskId+'"]');
-  if(row){
-    var cb = row.querySelector('input[type="checkbox"]');
-    if(cb) cb.checked = true;
-    row.classList.add("done");
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme", t);
+    state.theme = t;
+    saveState();
   }
-  refreshKPIs();
-}
+  elThemeSel.addEventListener("change", function(){ applyTheme(elThemeSel.value); });
 
-function findNextPlanTaskIdByLabel(label1, label2){
-  for(var wi=0; wi<PLAN.length; wi++){
-    var w = PLAN[wi];
-    for(var si=0; si<w.sessions.length; si++){
-      var s = w.sessions[si];
-      for(var ti=0; ti<s.tasks.length; ti++){
-        var t = s.tasks[ti];
-        var title = (t.t || "").toLowerCase();
-        var match1 = label1 && title.indexOf(label1.toLowerCase()) !== -1;
-        var match2 = label2 && title.indexOf(label2.toLowerCase()) !== -1;
-        if((match1 || match2) && !state.checks[t.id]){
-          return t.id;
+  function getWeakestSkill(){
+    var weakest="prepositions", min=999;
+    for(var k in state.mastery){
+      var v=state.mastery[k]||0;
+      if(v<min){ min=v; weakest=k; }
+    }
+    return weakest;
+  }
+
+  function updatePracticeKPIs(){
+    elXP.textContent = state.xp || 0;
+    elStreak.textContent = state.streak || 0;
+    elWeakSkill.textContent = SKILLS[getWeakestSkill()] || "—";
+
+    if(!state.sims.length){
+      elBest.textContent = "—";
+      elLast.textContent = "—";
+      elAvg.textContent = "—";
+      return;
+    }
+    var last = state.sims[state.sims.length-1];
+    var best = state.sims[0];
+    for(var i=1;i<state.sims.length;i++){
+      if(state.sims[i].correct > best.correct) best = state.sims[i];
+    }
+    var sum=0;
+    for(var j=0;j<state.sims.length;j++) sum += state.sims[j].correct;
+    var avg=Math.round(sum/state.sims.length);
+    elBest.textContent = best.correct+"/40";
+    elLast.textContent = last.correct+"/40";
+    elAvg.textContent = avg+"/40";
+  }
+
+  function refreshKPIs(){
+    var total=totalTasks(), done=doneTasks(), p=pctPlan();
+    elKpiTotal.textContent = total;
+    elKpiDone.textContent = done;
+    elKpiPct.textContent = p+"%";
+    elBar.style.width = p+"%";
+    elBadge.textContent = badgeText(p);
+  }
+
+  function markTaskDone(taskId){
+    if(!taskId) return;
+    state.checks = state.checks || {};
+    state.checks[taskId] = true;
+    saveState();
+
+    var row = document.querySelector('.task[data-id="'+taskId+'"]');
+    if(row){
+      var cb = row.querySelector('input[type="checkbox"]');
+      if(cb) cb.checked = true;
+      row.classList.add("done");
+    }
+    refreshKPIs();
+  }
+  function findNextPlanTaskIdByLabel(label1, label2){
+    for(var wi=0; wi<PLAN.length; wi++){
+      var w = PLAN[wi];
+      for(var si=0; si<w.sessions.length; si++){
+        var s = w.sessions[si];
+        for(var ti=0; ti<s.tasks.length; ti++){
+          var t = s.tasks[ti];
+          var title = (t.t || "").toLowerCase();
+          var match1 = label1 && title.indexOf(label1.toLowerCase()) !== -1;
+          var match2 = label2 && title.indexOf(label2.toLowerCase()) !== -1;
+          if((match1 || match2) && !state.checks[t.id]){
+            return t.id;
+          }
         }
       }
     }
+    return "";
   }
-  return "";
-}
 
-/* ===== render plan ===== */
-function render(){
-  elThemeSel.value = state.theme || "dark";
-  applyTheme(state.theme || "dark");
+  function render(){
+    elThemeSel.value = state.theme || "dark";
+    applyTheme(state.theme || "dark");
 
-  elStartDate.value = state.startDate || "";
-  elStartLabel.textContent = fmtDate(state.startDate);
-  elLevel.value = state.level || "A2";
-  elMins.value = state.mins || "35";
-  elNotes.value = state.notes || "";
+    elStartDate.value = state.startDate || "";
+    elStartLabel.textContent = fmtDate(state.startDate);
+    elLevel.value = state.level || "A2";
+    elMins.value = state.mins || "35";
+    elNotes.value = state.notes || "";
 
-  elWeeks.innerHTML = "";
-  var dayIndex=0;
+    elWeeks.innerHTML = "";
+    var dayIndex=0;
 
-  for(var w=0; w<PLAN.length; w++){
-    var week=PLAN[w];
-    var det=document.createElement("details");
-    det.open = !state.collapsed;
+    for(var w=0; w<PLAN.length; w++){
+      var week=PLAN[w];
+      var det=document.createElement("details");
+      det.open = !state.collapsed;
 
-    var sum=document.createElement("summary");
-    var right=document.createElement("span");
-    right.className="badge";
-    var range = state.startDate ? (fmtDate(addDays(state.startDate, dayIndex))+" → "+fmtDate(addDays(state.startDate, dayIndex+week.sessions.length-1))) : "sesiones";
-    sum.innerHTML = "<span>"+week.title+"</span>";
-    right.textContent = range;
-    sum.appendChild(right);
-    det.appendChild(sum);
+      var sum=document.createElement("summary");
+      var right=document.createElement("span");
+      right.className="badge";
+      var range = state.startDate ? (fmtDate(addDays(state.startDate, dayIndex))+" → "+fmtDate(addDays(state.startDate, dayIndex+week.sessions.length-1))) : "sesiones";
+      sum.innerHTML = "<span>"+week.title+"</span>";
+      right.textContent = range;
+      sum.appendChild(right);
+      det.appendChild(sum);
 
-    var box=document.createElement("div");
-    box.className="week";
+      var box=document.createElement("div");
+      box.className="week";
 
-    for(var s=0; s<week.sessions.length; s++){
-      var session=week.sessions[s];
-      var sWrap=document.createElement("div");
-      sWrap.style.marginTop="10px";
+      for(var s=0; s<week.sessions.length; s++){
+        var session=week.sessions[s];
+        var sWrap=document.createElement("div");
+        sWrap.style.marginTop="10px";
 
-      var sDate = state.startDate ? addDays(state.startDate, dayIndex) : "";
-      var whenLabel = state.startDate ? ("Fecha sugerida: "+fmtDate(sDate)) : "Elige fecha de inicio";
-      sWrap.innerHTML =
-        '<div class="meta">'+
-          '<span class="badge">'+session.name+'</span>'+
-          '<span class="badge">'+session.focus+'</span>'+
-          '<span class="badge">'+whenLabel+'</span>'+
-        '</div>';
+        var sDate = state.startDate ? addDays(state.startDate, dayIndex) : "";
+        var whenLabel = state.startDate ? ("Fecha sugerida: "+fmtDate(sDate)) : "Elige fecha de inicio";
+        sWrap.innerHTML =
+          '<div class="meta">'+
+            '<span class="badge">'+session.name+'</span>'+
+            '<span class="badge">'+session.focus+'</span>'+
+            '<span class="badge">'+whenLabel+'</span>'+
+          '</div>';
 
-      for(var t=0; t<session.tasks.length; t++){
-        (function(task){
-          var tDiv=document.createElement("div");
-          tDiv.className="task";
-          tDiv.dataset.id=task.id;
+        for(var t=0; t<session.tasks.length; t++){
+          (function(task){
+            var tDiv=document.createElement("div");
+            tDiv.className="task";
+            tDiv.dataset.id=task.id;
 
-          var cb=document.createElement("input");
-          cb.type="checkbox";
-          cb.checked=!!state.checks[task.id];
+            var cb=document.createElement("input");
+            cb.type="checkbox";
+            cb.checked=!!state.checks[task.id];
 
-          cb.addEventListener("change", function(){
-            state.checks[task.id]=cb.checked;
+            cb.addEventListener("change", function(){
+              state.checks[task.id]=cb.checked;
+              tDiv.classList.toggle("done", cb.checked);
+              saveState();
+              refreshKPIs();
+            });
+
+            var tt=document.createElement("div");
+            tt.className="t";
+            tt.innerHTML="<b>"+task.t+"</b><span>"+task.d+"</span>";
+
             tDiv.classList.toggle("done", cb.checked);
-            saveState();
-            refreshKPIs();
-          });
+            tDiv.appendChild(cb);
+            tDiv.appendChild(tt);
+            sWrap.appendChild(tDiv);
+          })(session.tasks[t]);
+        }
 
-          var tt=document.createElement("div");
-          tt.className="t";
-          tt.innerHTML="<b>"+task.t+"</b><span>"+task.d+"</span>";
-
-          tDiv.classList.toggle("done", cb.checked);
-          tDiv.appendChild(cb);
-          tDiv.appendChild(tt);
-          sWrap.appendChild(tDiv);
-        })(session.tasks[t]);
+        box.appendChild(sWrap);
+        dayIndex++;
       }
-
-      box.appendChild(sWrap);
-      dayIndex++;
+      det.appendChild(box);
+      elWeeks.appendChild(det);
     }
-    det.appendChild(box);
-    elWeeks.appendChild(det);
+
+    refreshKPIs();
+    updatePracticeKPIs();
   }
 
-  refreshKPIs();
-  updatePracticeKPIs();
-}
+  elStartDate.addEventListener("change", function(){ state.startDate = elStartDate.value || ""; saveState(); render(); });
+  elNotes.addEventListener("input", function(){
+    state.notes = elNotes.value; saveState();
+    elSavedMsg.textContent = "Guardado ✓";
+    setTimeout(function(){ elSavedMsg.textContent="—"; }, 900);
+  });
+  elLevel.addEventListener("change", function(){ state.level=elLevel.value; saveState(); });
+  elMins.addEventListener("change", function(){ state.mins=elMins.value; saveState(); });
 
-/* ===== eventos ===== */
-elStartDate.addEventListener("change", function(){ state.startDate = elStartDate.value || ""; saveState(); render(); });
-elNotes.addEventListener("input", function(){
-  state.notes = elNotes.value; saveState();
-  elSavedMsg.textContent = "Guardado ✓";
-  setTimeout(function(){ elSavedMsg.textContent="—"; }, 900);
-});
-elLevel.addEventListener("change", function(){ state.level=elLevel.value; saveState(); });
-elMins.addEventListener("change", function(){ state.mins=elMins.value; saveState(); });
-
-document.getElementById("btnReset").addEventListener("click", function(){
-  if(!confirm("¿Seguro que quieres reiniciar avances, notas y progreso?")) return;
-  state = defaultState();
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-  render();
-});
-document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
-document.getElementById("btnCollapse").addEventListener("click", function(){
-  state.collapsed = !state.collapsed; saveState(); render();
-});
-document.getElementById("btnCopy").addEventListener("click", function(){
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(elNotes.value || "").then(function(){
-      elSavedMsg.textContent="Notas copiadas ✅";
-      setTimeout(function(){ elSavedMsg.textContent="—"; }, 1200);
-    })["catch"](function(){ alert("No se pudo copiar. Copia manualmente."); });
-  }else{
-    alert("Copia manualmente (iPhone a veces limita el portapapeles).");
-  }
-});
-
-/* ===== Export CSV ===== */
-document.getElementById("btnExport").addEventListener("click", function(){
-  var rows=[["taskId","status","week","session","taskTitle","level","minutes","startDate","xp","streak"]];
-  for(var wi=0; wi<PLAN.length; wi++){
-    var w=PLAN[wi];
-    for(var si=0; si<w.sessions.length; si++){
-      var s=w.sessions[si];
-      for(var ti=0; ti<s.tasks.length; ti++){
-        var t=s.tasks[ti];
-        var status = state.checks[t.id] ? "DONE" : "TODO";
-        rows.push([t.id,status,w.title,s.name,t.t,state.level,state.mins,state.startDate,state.xp,state.streak]);
-      }
-    }
-  }
-  function esc(cell){
-    var str = String(cell==null?"":cell);
-    str = str.replace(/"/g,'""');
-    return '"'+str+'"';
-  }
-  var out=[];
-  for(var i=0;i<rows.length;i++){
-    var line=[];
-    for(var j=0;j<rows[i].length;j++) line.push(esc(rows[i][j]));
-    out.push(line.join(","));
-  }
-  var csv = out.join("\n");
-  var blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
-  var url = URL.createObjectURL(blob);
-  var a=document.createElement("a");
-  a.href=url;
-  var stamp=(new Date().toISOString().slice(0,10));
-  a.download="PIENSEII_Ingles_Progreso_"+stamp+".csv";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-});
-
-/* ===== Adaptativo + anti repetición ===== */
-var sessionSeen = {};
-var RECENT_LIMIT = 80;
-
-function qSignature(q){
-  var prompt = (q.prompt||"").replace(/\s+/g," ").toLowerCase();
-  var opts = (q.options||[]).join("|").replace(/\s+/g," ").toLowerCase();
-  return q.skill+"::"+prompt+"::"+opts;
-}
-function getRecentSet(){
-  var set={};
-  var arr = state.recentSigs || [];
-  for(var i=0;i<arr.length;i++) set[arr[i]]=true;
-  return set;
-}
-function pushRecentSig(sig){
-  state.recentSigs = state.recentSigs || [];
-  state.recentSigs.push(sig);
-  if(state.recentSigs.length>RECENT_LIMIT){
-    state.recentSigs = state.recentSigs.slice(state.recentSigs.length-RECENT_LIMIT);
-  }
-}
-function masteryDelta(skill, correct){
-  var cur = state.mastery[skill] || 0;
-  var next = cur + (correct?1:-1);
-  if(next<0) next=0;
-  if(next>5) next=5;
-  state.mastery[skill]=next;
-}
-function chooseSkillForPractice(){
-  var keys=[]; for(var k in SKILLS) keys.push(k);
-  var weights=[], sum=0;
-  for(var i=0;i<keys.length;i++){
-    var k=keys[i];
-    var m=state.mastery[k]||0;
-    var w=1+(5-m)*2;
-    weights.push({k:k,w:w}); sum+=w;
-  }
-  var r=Math.random()*sum;
-  for(var j=0;j<weights.length;j++){
-    r-=weights[j].w;
-    if(r<=0) return weights[j].k;
-  }
-  return "prepositions";
-}
-function calcDifficulty(skill){
-  var m = state.mastery[skill] || 0;
-  if(m>=4) return 3;
-  if(m>=2) return 2;
-  return 1;
-}
-function makeQuestion(mode){
-  var recent = getRecentSet();
-  var MAX_TRIES=90;
-
-  for(var i=0;i<MAX_TRIES;i++){
-    var q, skill, diff;
-    if(mode==="sim"){
-      var pool=["prepositions","quantifiers","demonstratives","connectors","correct_sentence","tenses","modals","comparatives","vocab","reading","functions"];
-      skill=pick(pool);
-      diff=calcDifficulty(skill);
-      q=genQuestionBySkill(skill,diff);
+  document.getElementById("btnReset").addEventListener("click", function(){
+    if(!confirm("¿Seguro que quieres reiniciar avances, notas y progreso?")) return;
+    state = defaultState();
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    render();
+  });
+  document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
+  document.getElementById("btnCollapse").addEventListener("click", function(){
+    state.collapsed = !state.collapsed; saveState(); render();
+  });
+  document.getElementById("btnCopy").addEventListener("click", function(){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(elNotes.value || "").then(function(){
+        elSavedMsg.textContent="Notas copiadas ✅";
+        setTimeout(function(){ elSavedMsg.textContent="—"; }, 1200);
+      })["catch"](function(){ alert("No se pudo copiar. Copia manualmente."); });
     }else{
-      skill=chooseSkillForPractice();
-      diff=calcDifficulty(skill);
-      q=genQuestionBySkill(skill,diff);
+      alert("Copia manualmente (iPhone a veces limita el portapapeles).");
     }
-    var sig=qSignature(q);
-    var inSession=!!sessionSeen[sig];
-    var inRecent=!!recent[sig];
-    if(!inSession && (!inRecent || i>60)){
-      sessionSeen[sig]=true;
-      pushRecentSig(sig);
-      saveState();
-      return q;
+  });
+
+  document.getElementById("btnExport").addEventListener("click", function(){
+    var rows=[["taskId","status","week","session","taskTitle","level","minutes","startDate","xp","streak"]];
+    for(var wi=0; wi<PLAN.length; wi++){
+      var w=PLAN[wi];
+      for(var si=0; si<w.sessions.length; si++){
+        var s=w.sessions[si];
+        for(var ti=0; ti<s.tasks.length; ti++){
+          var t=s.tasks[ti];
+          var status = state.checks[t.id] ? "DONE" : "TODO";
+          rows.push([t.id,status,w.title,s.name,t.t,state.level,state.mins,state.startDate,state.xp,state.streak]);
+        }
+      }
+    }
+    function esc(cell){
+      var str = String(cell==null?"":cell);
+      str = str.replace(/"/g,'""');
+      return '"'+str+'"';
+    }
+    var out=[];
+    for(var i=0;i<rows.length;i++){
+      var line=[];
+      for(var j=0;j<rows[i].length;j++) line.push(esc(rows[i][j]));
+      out.push(line.join(","));
+    }
+    var csv = out.join("\n");
+    var blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;
+    var stamp=(new Date().toISOString().slice(0,10));
+    a.download="PIENSEII_Ingles_Progreso_"+stamp+".csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  /* ===== Anti-repetición ===== */
+  var sessionSeen = {};
+  var RECENT_LIMIT = 80;
+
+  function qSignature(q){
+    var prompt = (q.prompt||"").replace(/\s+/g," ").toLowerCase();
+    var opts = (q.options||[]).join("|").replace(/\s+/g," ").toLowerCase();
+    return q.skill+"::"+prompt+"::"+opts;
+  }
+  function getRecentSet(){
+    var set={};
+    var arr = state.recentSigs || [];
+    for(var i=0;i<arr.length;i++) set[arr[i]]=true;
+    return set;
+  }
+  function pushRecentSig(sig){
+    state.recentSigs = state.recentSigs || [];
+    state.recentSigs.push(sig);
+    if(state.recentSigs.length>RECENT_LIMIT){
+      state.recentSigs = state.recentSigs.slice(state.recentSigs.length-RECENT_LIMIT);
     }
   }
-  var fb = (mode==="sim") ? "reading" : getWeakestSkill();
-  var qf=genQuestionBySkill(fb,calcDifficulty(fb));
-  var sf=qSignature(qf);
-  sessionSeen[sf]=true;
-  pushRecentSig(sf);
-  saveState();
-  return qf;
-}
 
-/* ===== Session inline ===== */
-var sessionMode=null, sessionTotal=0, sessionIndex=0, currentQ=null, locked=false;
-var hits=0, miss=0, xpGain=0;
-var simSecondsLeft=0, simTimer=null, simSecondsUsed=0;
-
-function todayISO(){
-  var d=new Date();
-  var yy=d.getFullYear();
-  var mm=("0"+(d.getMonth()+1)).slice(-2);
-  var dd=("0"+d.getDate()).slice(-2);
-  return yy+"-"+mm+"-"+dd;
-}
-function updateStreak(){
-  var t=todayISO();
-  if(state.lastPracticeDate===t) return;
-  if(!state.lastPracticeDate){ state.streak=1; }
-  else{
-    var prev=new Date(state.lastPracticeDate);
-    var now=new Date(t);
-    var diff=Math.round((now-prev)/(1000*60*60*24));
-    state.streak = (diff===1) ? (state.streak+1) : 1;
+  function masteryDelta(skill, correct){
+    var cur = state.mastery[skill] || 0;
+    var next = cur + (correct?1:-1);
+    if(next<0) next=0;
+    if(next>5) next=5;
+    state.mastery[skill]=next;
   }
-  state.lastPracticeDate=t;
-}
-function tickTimer(){
-  var mm=("0"+Math.floor(simSecondsLeft/60)).slice(-2);
-  var ss=("0"+(simSecondsLeft%60)).slice(-2);
-  ppTimer.textContent="⏱ "+mm+":"+ss;
-}
+  function chooseSkillForPractice(){
+    var keys=[]; for(var k in SKILLS) keys.push(k);
+    var weights=[], sum=0;
+    for(var i=0;i<keys.length;i++){
+      var k=keys[i];
+      var m=state.mastery[k]||0;
+      var w=1+(5-m)*2;
+      weights.push({k:k,w:w}); sum+=w;
+    }
+    var r=Math.random()*sum;
+    for(var j=0;j<weights.length;j++){
+      r-=weights[j].w;
+      if(r<=0) return weights[j].k;
+    }
+    return "prepositions";
+  }
+  function calcDifficulty(skill){
+    var m = state.mastery[skill] || 0;
+    if(m>=4) return 3;
+    if(m>=2) return 2;
+    return 1;
+  }
+  function makeQuestion(mode){
+    var recent = getRecentSet();
+    var MAX_TRIES=90;
 
-function showPanel(){ practicePanel.classList.add("show"); }
-function hidePanel(){
-  practicePanel.classList.remove("show");
-  if(simTimer){ clearInterval(simTimer); simTimer=null; }
-}
+    for(var i=0;i<MAX_TRIES;i++){
+      var q, skill, diff;
+      if(mode==="sim"){
+        var pool=["prepositions","quantifiers","demonstratives","connectors","correct_sentence","tenses","modals","comparatives","vocab","reading","functions"];
+        skill=pick(pool);
+        diff=calcDifficulty(skill);
+        q=genQuestionBySkill(skill,diff);
+      }else{
+        skill=chooseSkillForPractice();
+        diff=calcDifficulty(skill);
+        q=genQuestionBySkill(skill,diff);
+      }
+      var sig=qSignature(q);
+      var inSession=!!sessionSeen[sig];
+      var inRecent=!!recent[sig];
+      if(!inSession && (!inRecent || i>60)){
+        sessionSeen[sig]=true;
+        pushRecentSig(sig);
+        saveState();
+        return q;
+      }
+    }
+    var fb = (mode==="sim") ? "reading" : getWeakestSkill();
+    var qf=genQuestionBySkill(fb,calcDifficulty(fb));
+    var sf=qSignature(qf);
+    sessionSeen[sf]=true;
+    pushRecentSig(sf);
+    saveState();
+    return qf;
+  }
 
-function openSession(mode){
-  sessionMode=mode;
-  sessionTotal=(mode==="sim")?40:10;
-  sessionIndex=0;
-  hits=0; miss=0; xpGain=0;
-  sessionSeen={};
+  /* ===== Session inline ===== */
+  var sessionMode=null, sessionTotal=0, sessionIndex=0, currentQ=null, locked=false;
+  var hits=0, miss=0, xpGain=0;
+  var simSecondsLeft=0, simTimer=null, simSecondsUsed=0;
 
-  ppTitle.textContent = (mode==="sim") ? "Simulacro PIENSE II (Inglés)" : "Práctica adaptativa";
-  hitsEl.textContent="0";
-  missEl.textContent="0";
-  xpGainEl.textContent="0";
-  btnNext.disabled=true;
-  qExplain.classList.remove("show");
-  qExplain.innerHTML="";
-  qOptions.innerHTML="";
-  qPrompt.innerHTML="";
+  function todayISO(){
+    var d=new Date();
+    var yy=d.getFullYear();
+    var mm=("0"+(d.getMonth()+1)).slice(-2);
+    var dd=("0"+d.getDate()).slice(-2);
+    return yy+"-"+mm+"-"+dd;
+  }
+  function updateStreak(){
+    var t=todayISO();
+    if(state.lastPracticeDate===t) return;
+    if(!state.lastPracticeDate){ state.streak=1; }
+    else{
+      var prev=new Date(state.lastPracticeDate);
+      var now=new Date(t);
+      var diff=Math.round((now-prev)/(1000*60*60*24));
+      state.streak = (diff===1) ? (state.streak+1) : 1;
+    }
+    state.lastPracticeDate=t;
+  }
+  function tickTimer(){
+    var mm=("0"+Math.floor(simSecondsLeft/60)).slice(-2);
+    var ss=("0"+(simSecondsLeft%60)).slice(-2);
+    ppTimer.textContent="⏱ "+mm+":"+ss;
+  }
 
-  showPanel();
-
-  if(mode==="sim"){
-    simSecondsLeft=30*60; simSecondsUsed=0;
-    ppTimer.style.display="inline-flex";
-    tickTimer();
+  function showPanel(){ practicePanel.classList.add("show"); }
+  function hidePanel(){
+    practicePanel.classList.remove("show");
     if(simTimer){ clearInterval(simTimer); simTimer=null; }
-    simTimer=setInterval(function(){
-      simSecondsLeft--; simSecondsUsed++;
+  }
+
+  function openSession(mode){
+    sessionMode=mode;
+    sessionTotal=(mode==="sim")?40:10;
+    sessionIndex=0;
+    hits=0; miss=0; xpGain=0;
+    sessionSeen={};
+
+    sessionFinished=false;
+    btnNext.textContent=originalNextLabel;
+    btnNext.disabled=true;
+
+    ppTitle.textContent = (mode==="sim") ? "Simulacro PIENSE II (Inglés)" : "Práctica adaptativa";
+    hitsEl.textContent="0";
+    missEl.textContent="0";
+    xpGainEl.textContent="0";
+    qExplain.classList.remove("show");
+    qExplain.innerHTML="";
+    qOptions.innerHTML="";
+    qPrompt.innerHTML="";
+
+    showPanel();
+
+    if(mode==="sim"){
+      simSecondsLeft=30*60; simSecondsUsed=0;
+      ppTimer.style.display="inline-flex";
       tickTimer();
-      if(simSecondsLeft<=0) endSession(true);
-    },1000);
-  }else{
-    ppTimer.style.display="none";
+      if(simTimer){ clearInterval(simTimer); simTimer=null; }
+      simTimer=setInterval(function(){
+        simSecondsLeft--; simSecondsUsed++;
+        tickTimer();
+        if(simSecondsLeft<=0) endSession(true);
+      },1000);
+    }else{
+      ppTimer.style.display="none";
+      if(simTimer){ clearInterval(simTimer); simTimer=null; }
+    }
+
+    nextQuestion();
+  }
+
+  function renderQuestion(q){
+    locked=false;
+    currentQ=q;
+    btnNext.disabled=true;
+    qExplain.classList.remove("show");
+    qExplain.innerHTML="";
+    skillBadge.textContent="Habilidad: "+(SKILLS[q.skill]||q.skill);
+    diffBadge.textContent="Dificultad: "+(q.difficulty||1);
+    qPrompt.innerHTML=q.prompt;
+
+    qOptions.innerHTML="";
+    for(var i=0;i<q.options.length;i++){
+      (function(idx){
+        var b=document.createElement("button");
+        b.className="opt";
+        b.type="button";
+        b.innerHTML=q.options[idx];
+        b.addEventListener("click", function(){ chooseOption(idx); });
+        qOptions.appendChild(b);
+      })(i);
+    }
+  }
+
+  function chooseOption(idx){
+    if(locked) return;
+    locked=true;
+    var correct = (idx===currentQ.answer);
+
+    var opts=qOptions.querySelectorAll(".opt");
+    for(var i=0;i<opts.length;i++){
+      if(i===currentQ.answer) opts[i].classList.add("correct");
+      if(i===idx && !correct) opts[i].classList.add("wrong");
+    }
+
+    if(correct){ hits++; xpGain += (sessionMode==="sim")?2:3; }
+    else{ miss++; xpGain += 1; }
+
+    hitsEl.textContent=String(hits);
+    missEl.textContent=String(miss);
+    xpGainEl.textContent=String(xpGain);
+
+    masteryDelta(currentQ.skill, correct);
+
+    qExplain.innerHTML="<b>Explicación:</b> "+(currentQ.explain||"—");
+    qExplain.classList.add("show");
+    btnNext.disabled=false;
+  }
+
+  function nextQuestion(){
+    if(sessionFinished) return;
+    sessionIndex++;
+    if(sessionIndex>sessionTotal){ endSession(false); return; }
+    ppCount.textContent = sessionIndex+" / "+sessionTotal;
+    var q=makeQuestion(sessionMode);
+    renderQuestion(q);
+  }
+
+  function endSession(fromTimeout){
+    updateStreak();
+    state.xp = (state.xp||0) + xpGain;
+
+    if(sessionMode==="sim"){
+      var correct=hits, total=sessionTotal;
+      var pct=Math.round((correct/total)*100);
+      state.sims.push({dateISO:(new Date().toISOString()), correct:correct, total:total, pct:pct, secondsUsed: fromTimeout?(30*60):simSecondsUsed});
+    }
+
+    saveState();
+    updatePracticeKPIs();
+    refreshKPIs();
+
+    if(sessionMode === "sim"){
+      markTaskDone(findNextPlanTaskIdByLabel("simulacro"));
+    }else{
+      var id = findNextPlanTaskIdByLabel("práctica adaptativa", "práctica (10)");
+      if(!id) id = findNextPlanTaskIdByLabel("práctica");
+      markTaskDone(id);
+    }
+
+    var pct2=Math.round((hits/sessionTotal)*100);
+    qPrompt.innerHTML =
+      "<b>Sesión terminada</b><br><br>"+
+      '<div class="qmeta">'+
+        '<span class="badge">Modo: '+(sessionMode==="sim"?"Simulacro":"Práctica")+'</span>'+
+        '<span class="badge">Aciertos: '+hits+'</span>'+
+        '<span class="badge">Errores: '+miss+'</span>'+
+        '<span class="badge">Resultado: '+hits+'/'+sessionTotal+' ('+pct2+'%)</span>'+
+        (sessionMode==="sim"?('<span class="badge">Estimado Inglés (0–40): '+hits+'/40</span>'):"")+
+      "</div>"+
+      '<div class="muted small" style="margin-top:8px">Pulsa <b>Cerrar</b> para salir.</div>';
+
+    qOptions.innerHTML="";
+    qExplain.classList.remove("show");
+    qExplain.innerHTML="";
+
+    sessionFinished = true;
+    btnNext.textContent = "Cerrar";
+    btnNext.disabled = false;
+
     if(simTimer){ clearInterval(simTimer); simTimer=null; }
   }
 
-  nextQuestion();
-}
+  document.getElementById("btnPractice").addEventListener("click", function(){ openSession("practice"); });
+  document.getElementById("btnSim").addEventListener("click", function(){ openSession("sim"); });
 
-function renderQuestion(q){
-  locked=false;
-  currentQ=q;
-  btnNext.disabled=true;
-  qExplain.classList.remove("show");
-  qExplain.innerHTML="";
-  skillBadge.textContent="Habilidad: "+(SKILLS[q.skill]||q.skill);
-  diffBadge.textContent="Dificultad: "+(q.difficulty||1);
-  qPrompt.innerHTML=q.prompt;
+  btnNext.addEventListener("click", function(){
+    if(sessionFinished){
+      sessionFinished = false;
+      btnNext.textContent = originalNextLabel;
+      btnNext.disabled = true;
+      hidePanel();
+      return;
+    }
+    nextQuestion();
+  });
 
-  qOptions.innerHTML="";
-  for(var i=0;i<q.options.length;i++){
-    (function(idx){
-      var b=document.createElement("button");
-      b.className="opt";
-      b.type="button";
-      b.innerHTML=q.options[idx];
-      b.addEventListener("click", function(){ chooseOption(idx); });
-      qOptions.appendChild(b);
-    })(i);
-  }
-}
+  ppClose.addEventListener("click", function(){ hidePanel(); });
 
-function chooseOption(idx){
-  if(locked) return;
-  locked=true;
-  var correct = (idx===currentQ.answer);
+  document.getElementById("btnEmail").addEventListener("click", function(){
+    var weak = SKILLS[getWeakestSkill()] || "";
+    var planPct = pctPlan();
+    var lastSim = state.sims.length ? state.sims[state.sims.length-1] : null;
+    var lastSimTxt = lastSim ? (lastSim.correct+"/40 ("+lastSim.pct+"%)") : "Sin simulacro aún";
 
-  var opts=qOptions.querySelectorAll(".opt");
-  for(var i=0;i<opts.length;i++){
-    if(i===currentQ.answer) opts[i].classList.add("correct");
-    if(i===idx && !correct) opts[i].classList.add("wrong");
-  }
-
-  if(correct){ hits++; xpGain += (sessionMode==="sim")?2:3; }
-  else{ miss++; xpGain += 1; }
-
-  hitsEl.textContent=String(hits);
-  missEl.textContent=String(miss);
-  xpGainEl.textContent=String(xpGain);
-
-  masteryDelta(currentQ.skill, correct);
-
-  qExplain.innerHTML="<b>Explicación:</b> "+(currentQ.explain||"—");
-  qExplain.classList.add("show");
-  btnNext.disabled=false;
-}
-
-function nextQuestion(){
-  sessionIndex++;
-  if(sessionIndex>sessionTotal){ endSession(false); return; }
-  ppCount.textContent = sessionIndex+" / "+sessionTotal;
-  var q=makeQuestion(sessionMode);
-  renderQuestion(q);
-}
-
-function endSession(fromTimeout){
-  updateStreak();
-  state.xp = (state.xp||0) + xpGain;
-
-  if(sessionMode==="sim"){
-    var correct=hits, total=sessionTotal;
-    var pct=Math.round((correct/total)*100);
-    state.sims.push({dateISO:(new Date().toISOString()), correct:correct, total:total, pct:pct, secondsUsed: fromTimeout?(30*60):simSecondsUsed});
-  }
-
-  saveState();
-  updatePracticeKPIs();
-  refreshKPIs();
-
-  /* ✅ AUTO-TACHADO */
-  if(sessionMode === "sim"){
-    markTaskDone(findNextPlanTaskIdByLabel("simulacro"));
-  }else{
-    var id = findNextPlanTaskIdByLabel("práctica adaptativa", "práctica (10)");
-    if(!id) id = findNextPlanTaskIdByLabel("práctica");
-    markTaskDone(id);
-  }
-
-  var pct2=Math.round((hits/sessionTotal)*100);
-  qPrompt.innerHTML =
-    "<b>Sesión terminada</b><br><br>"+
-    '<div class="qmeta">'+
-      '<span class="badge">Modo: '+(sessionMode==="sim"?"Simulacro":"Práctica")+'</span>'+
-      '<span class="badge">Aciertos: '+hits+'</span>'+
-      '<span class="badge">Errores: '+miss+'</span>'+
-      '<span class="badge">Resultado: '+hits+'/'+sessionTotal+' ('+pct2+'%)</span>'+
-      (sessionMode==="sim"?('<span class="badge">Estimado Inglés (0–40): '+hits+'/40</span>'):"")+
-    "</div>";
-  qOptions.innerHTML="";
-  qExplain.classList.remove("show");
-  qExplain.innerHTML="";
-  btnNext.disabled=true;
-
-  if(simTimer){ clearInterval(simTimer); simTimer=null; }
-}
-
-document.getElementById("btnPractice").addEventListener("click", function(){ openSession("practice"); });
-document.getElementById("btnSim").addEventListener("click", function(){ openSession("sim"); });
-btnNext.addEventListener("click", function(){ nextQuestion(); });
-ppClose.addEventListener("click", function(){ hidePanel(); });
-
-/* ===== Email progress ===== */
-document.getElementById("btnEmail").addEventListener("click", function(){
-  var weak = SKILLS[getWeakestSkill()] || "";
-  var planPct = pctPlan();
-  var lastSim = state.sims.length ? state.sims[state.sims.length-1] : null;
-  var lastSimTxt = lastSim ? (lastSim.correct+"/40 ("+lastSim.pct+"%)") : "Sin simulacro aún";
-
-  var body =
+    var body =
 "Hola Miss Alejandra Garza,\n\n"+
 "Te comparto mi progreso en la app PIENSE II (Inglés):\n\n"+
 "- Fecha: "+(new Date().toLocaleString())+"\n"+
@@ -1416,15 +1422,14 @@ document.getElementById("btnEmail").addEventListener("click", function(){
 "Notas del alumno:\n"+(state.notes||"—")+"\n\n"+
 "(App desarrollada por Claudia Alejandra Garza Hernández.)\n";
 
-  var subject="Progreso PIENSE II — Inglés (Alumno)";
-  var url="mailto:"+encodeURIComponent(TEACHER_EMAIL)+
-          "?subject="+encodeURIComponent(subject)+
-          "&body="+encodeURIComponent(body);
-  window.location.href=url;
-});
+    var subject="Progreso PIENSE II — Inglés (Alumno)";
+    var url="mailto:"+encodeURIComponent(TEACHER_EMAIL)+
+            "?subject="+encodeURIComponent(subject)+
+            "&body="+encodeURIComponent(body);
+    window.location.href=url;
+  });
 
-/* init */
-render();
+  render();
 </script>
 </body>
 </html>
